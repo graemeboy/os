@@ -83,7 +83,7 @@ function ois_add_new() {
 		// Title
 		ois_section_title('Duplicate Skin', 'You are Currently Duplicating <em>' . $this_skin['title'], '</em>Don\'t forget to click "Create Skin" once you are finished revising.');
 		$uri = explode('?', $_SERVER['REQUEST_URI']);
-		$performance_url = $uri[0] . '?page=ois-' . $dup_skin['id'];
+		$performance_url = $uri[0] . '?page=ois-' . $dup_id;
 		
 	} else {
 		$skin_to_use = '';
@@ -1021,7 +1021,6 @@ function ois_create_carousel($cur_design, $skin_id) { ?>
 			$('#ois_appearance_list_' + current).hide();
 		  	$('#ois_appearance_list_' + target).show();
 		  	$('#newskin_design_selection').val(target);
-		  	ois_calc_completion(); // recalc.
 		});
 	});
 	</script>
@@ -1242,7 +1241,7 @@ function ois_handle_new_skin() {
 		$redirect_url = $_POST['newskin_redirect'];
 		
 		// Set the hidden values:
-		// There are six
+		// There are five
 		$hidden = array();
 		for ($i = 0; $i < 5; $i++)
 		{

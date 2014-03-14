@@ -931,10 +931,13 @@ function ois_wrapper($ois, $data) {
 			'left' => '0px',
 		);
 	}
-	if (is_home()) {
-		$post_id = 'homepage';
-	} else {
-		$post_id = get_the_ID();
+	$post_id = '';
+	if (!is_admin()) {
+		if (is_home()) {
+			$post_id = 'homepage';
+		} else {
+			$post_id = get_the_ID();
+		}
 	}
 	$wrapper = '<!-- OptinSkin -->
 	<div align="center" class="ois_wrapper ' . $extra_classes . $resp_class . '" data="' . $skin_id . '"';
