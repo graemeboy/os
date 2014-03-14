@@ -1,9 +1,7 @@
 <?php
 function ois_add_new() {
 	$design_to_use = '';
-	
 	ois_add_new_load_scripts();
-	//ois_update_designs_code();
 	if (isset($_GET['id'])) { // If we are editing some skin.
 		$skin_id = $_GET['id'];
 		$skins = get_option('ois_skins');
@@ -23,11 +21,11 @@ function ois_add_new() {
 				if ($dup_id == $some_skin['id']) {
 					$this_skin = $some_skin;
 					$skin_id = '';
-					break; // this is probably poor design
+					break;
 				}
 			}
 		}
-	} else {
+	} else { // creating a new skin
 		$this_skin = null;
 		$dup_skin = null;
 		$skin_id = '';
@@ -168,9 +166,9 @@ function ois_add_new() {
 	ois_option_end();
 	ois_table_end();
 ?>
-	<div id="ois_add_loader" style="height: 250px; padding: 15px; text-align:center;">
+	<div id="ois_add_loader">
 		<h3 style="padding-bottom:10px;">Loading All Designs...</h3>
-		<img src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/images/loader.gif" />
+		<img src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/images/loader.gif" style="width:40px" />
 	</div>
 	<div class="alert alert-warning" style="padding: 10px;
 font-size: 13px;
