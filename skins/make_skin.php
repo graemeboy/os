@@ -124,26 +124,24 @@ function ois_make_skin($skin, $design) {
 	} else {
 		$redirect_url = home_url();
 	}
-	if (trim($skin['hidden_name_1']) != '') {
-		$hidden_name_1 = $skin['hidden_name_1'];
-		$hidden_value_1 = $skin['hidden_value_1'];
+	
+	// Hidden names and values
+	// There are 5
+	$hidden = array();
+	for ($i = 0; $i < 5; $i++) 
+	{
+		// We cannot gaurantee at this point that there will be something
+		// in $skin['hidden_name_1']
+		if (isset($skin['hidden_name_' + $i]))
+		{
+			$hidden['hidden_name_' + $i] = $skin['hidden_name_' + $i];
+		}
+		if (isset($skin['hidden_value_' + $i]))
+		{
+			$hidden['hidden_value_' + $i] = $skin['hidden_value_' + $i];
+		}
 	}
-	if (trim($skin['hidden_name_2']) != '') {
-		$hidden_name_2 = $skin['hidden_name_2'];
-		$hidden_value_2 = $skin['hidden_value_2'];
-	}
-	if (trim($skin['hidden_name_3']) != '') {
-		$hidden_name_3 = $skin['hidden_name_3'];
-		$hidden_value_3 = $skin['hidden_value_3'];
-	}
-	if (trim($skin['hidden_name_4']) != '') {
-		$hidden_name_4 = $skin['hidden_name_4'];
-		$hidden_value_4 = $skin['hidden_value_4'];
-	}
-	if (trim($skin['hidden_name_5']) != '') {
-		$hidden_name_5 = $skin['hidden_name_5'];
-		$hidden_value_5 = $skin['hidden_value_5'];
-	}
+	
 	
 	$basic_attr = array (
 		'skin_id' => $skin_id,
@@ -157,22 +155,14 @@ function ois_make_skin($skin, $design) {
 		'label_email' => $label_email,
 		'button_text' => 'Subscribe',
 		'redirect_url' => $redirect_url,
-		'hidden_name_1' => $hidden_name_1,
-		'hidden_name_2' => $hidden_name_2,
-		'hidden_name_3' => $hidden_name_3,
-		'hidden_name_4' => $hidden_name_4,
-		'hidden_name_5' => $hidden_name_5,
-		'hidden_value_1' => $hidden_value_1,
-		'hidden_value_2' => $hidden_value_2,
-		'hidden_value_3' => $hidden_value_3,
-		'hidden_value_4' => $hidden_value_4,
-		'hidden_value_5' => $hidden_value_5,
 		'button_value' => $button_value,
 		'button_style' => $button_style,
 		'force_break' => $force_break,
 		'placeholder_type' => $placeholder_type,
 		'maintain_line' => $maintain_line,
 	);
+	// merge this array with the hidden values
+	array_merge($basic_attr, $hidden);
 	
 	if ($service == 'aweber') {
 		// Aweber
@@ -339,7 +329,9 @@ function ois_make_skin($skin, $design) {
 			$content = str_replace('%' . $name[0] . '%', stripslashes($value), $content);
 		}
 	}
-
+	
+	$extra_classes = ''; // we may need to add extra classes in this next section.
+	$popup_data = '';
 	if (!empty($skin['scrolled_past'])) {
 		$popup_data = $skin['scrolled_past'];
 	}
@@ -383,8 +375,7 @@ function ois_make_skin($skin, $design) {
 		'popup_data' => $popup_data,
 		'responsiveness' => $responsiveness,
 	);
-	$content = ois_wrapper($content, $data);
-	return $content;
+	return ois_wrapper($content, $data);
 }
 
 function ois_mailchimp_form($attr) {
@@ -743,17 +734,6 @@ function ois_create_form_with_data($data) {
 	$placeholder_type = $data['placeholder_type'];
 	$maintain_line = $data['maintain_line'];
 	
-	$hidden_name_1 = $data['hidden_name_1'];
-	$hidden_name_2 = $data['hidden_name_2'];
-	$hidden_name_3 = $data['hidden_name_3'];
-	$hidden_name_4 = $data['hidden_name_4'];
-	$hidden_name_5 = $data['hidden_name_5'];
-	$hidden_value_1 = $data['hidden_value_1'];
-	$hidden_value_2 = $data['hidden_value_2'];
-	$hidden_value_3 = $data['hidden_value_3'];
-	$hidden_value_4 = $data['hidden_value_4'];
-	$hidden_value_5 = $data['hidden_value_5'];
-
 	$form = '<form ';
 	$form .= 'id="' . $skin_id . '" ';
 	$form .= 'service="' . $service . '" ';
@@ -838,7 +818,7 @@ function ois_create_form_with_data($data) {
 		$form .= '<label for="' . $skin_id . '_email" >' . $label_email . '</label> ';
 	}
 
-	$form .= '<input type="text" ' . $email_value . ' name="' . $email_name . '" id="' . $skin_id . '_email" class="span12 ois_textbox_' . $attr['design_id'] . ' ois_textbox_email_' . $attr['design_id'] . '"';
+	$form .= '<input type="text" ' . $email_value . ' name="' . $email_name . '" id="' . $skin_id . '_email" class="span12 ois_textbox_' . $data['design_id'] . ' ois_textbox_email_' . $data['design_id'] . '"';
 	if ($email_width && trim($email_width) != '') {
 		$form .= ' style="width: ' . $email_width . ' !important;"';
 	}
@@ -873,121 +853,60 @@ function ois_create_form_with_data($data) {
 	$form .= '</div>'; // closes conditional div: span4 or span12.
 	$form .= '</div>'; // .span12, closes 2nd div.
 	$form .= '</div>'; // .row-fluid, closes 1st div.
-	// 0 open divs.
-	if (trim($hidden_name_1) != '') {
-		$form .= '<input type="hidden" name="' . $hidden_name_1 . '" value="' . $hidden_value_1 . '" />';
-	}
-	if (trim($hidden_name_2) != '') {
-		$form .= '<input type="hidden" name="' . $hidden_name_2 . '" value="' . $hidden_value_2 . '" />';
-	}
-	if (trim($hidden_name_3) != '') {
-		$form .= '<input type="hidden" name="' . $hidden_name_3 . '" value="' . $hidden_value_3 . '" />';
-	}
-	if (trim($hidden_name_4) != '') {
-		$form .= '<input type="hidden" name="' . $hidden_name_4 . '" value="' . $hidden_value_4 . '" />';
-	}
-	if (trim($hidden_name_5) != '') {
-		$form .= '<input type="hidden" name="' . $hidden_name_5 . '" value="' . $hidden_value_5 . '" />';
-	}
-	$form .= '</form>';
 	
-
-
-	/*
-$form .= '<div class="row-fluid">'; //1
-	if ($force_break != 'yes') {
-		$form .= '<div class="span8">';
-	}
-	if ($enable_name && trim($enable_name) == 'yes') { // The "Name" field of the form, if necessary.
-		if ($maintain_line == 'yes') {
-			$form .= '<div class="span6">'; //2
-		} else {
-			$form .= '<div class="span12">'; //2
-		}
-		if ($label_name && trim($label_name) != '') { // Label, if necessary.
-			$form .= '<label for="' . $skin_id . '_name" >' . $label_name . '</label> ';
-		}
-		$form .= '<input type="text" name="' . $name_name . '" ' . $name_value . ' class="span12 ois_textbox_' . $design_id . ' ois_textbox_name_' . $design_id . '" id="' . $skin_id . '_name"';
-		if (trim($name_width) != '') {
-			$form .= ' style="width: ' . $name_width . ' !important;"';
-		}
-		$form .= ' />';
-		$form .= '</div>'; //1
-
-		if ($maintain_line != 'yes') { // close the row
-			$form .= '</div>';
-			$form .= '<div class="row-fluid">'; // open new row
-		}
-	} else {
-		$form .= '<div class="span12">'; //2
-	}
-
-
-	// The "Email" field of the form.
-	if ($maintain_line == 'yes') {
-		if ($enable_name && trim($enable_name) == 'yes') {
-			$form .= '<div class="span6">'; //2
-		} else {
-			$form .= '<div class="span12">'; //2
-		}
-	} else {
-		$form .= '<div class="span12">'; //2
-	}
-	if ($label_email && trim($label_email) != '') { // Label, if necessary
-		$form .= '<label for="' . $skin_id . '_email" >' . $label_email . '</label> ';
-	}
-
-	$form .= '<input type="text" ' . $email_value . ' name="' . $email_name . '" id="' . $skin_id . '_email" class="span12 ois_textbox_' . $attr['design_id'] . ' ois_textbox_email_' . $attr['design_id'] . '"';
-	if ($email_width && trim($email_width) != '') {
-		$form .= ' style="width: ' . $email_width . ' !important;"';
-	}
-	$form .= ' /></div>'; //close the .span
-
-
-	if ($force_break == 'yes') { // If we're breaking the button from the other inputs.
-		$form .= '</div>'; // close the row.
-	} else {
-		$form .= '</div><div class="span4">';
-	}
-
-	// Hidden values; most services require some hidden values.
-	$form .= $hidden_values;
-
-	// Signup button.
-	$form .= '<input type="submit" ' . $button_style . ' value="' . $button_text . '" class="ois_button_' . $design_id . '" />
-	</form>';
-	if ($force_break != 'yes') {
-		$form .= '</div>';
-	}
-	$form .= '</div>'; // close the row
-*/
+	// For each of the hidden values, add those fields.
+	// There are 5 max.
+	for ($i = 0; $i < 5; $i++)
+	{
+		if (isset($data['hidden_name_' + $i]) && $data['hidden_name_' + $i] != ''
+			&& isset($data['hidden_value_' + $i]))
+		{
+			$form .= '<input type="hidden" name="' . $data['hidden_name_' + $i] . '" value="' . $data['hidden_value_' + $i] . '" />';
+		} // if isset, isset, != ''
+	} // for i in range (5)
+	$form .= '</form>';
 
 	return $form;
 
 }
 
 function ois_wrapper($ois, $data) {
-
+	
+	// Binary settings
+	if (!empty($data['margin_type'])) {
+		$margin_type = $data['margin_type'];
+	} // binary: should always be set
+	if (isset($data['aff_enable'])) {
+		$aff_enable = $data['aff_enable'];
+	} else {
+		$aff_enable = false;
+	}
+	
+	// Continuous / String settings
 	if (!empty($data['skin_id'])) {
 		$skin_id = $data['skin_id'];
+	} else {
+		$skin_id = '';
 	}
 	if (!empty($data['margins'])) {
 		$skin_margins = $data['margins'];
-	}
-	if (!empty($data['margin_type'])) {
-		$margin_type = $data['margin_type'];
+	} else {
+		$skin_margins = '';
 	}
 	if (!empty($data['aff_username'])) {
 		$aff_username = $data['aff_username'];
-	}
-	if (!empty($data['aff_enable'])) {
-		$aff_enable = $data['aff_enable'];
+	} else {
+		$aff_username = '';
 	}
 	if (!empty($data['extra_classes'])) {
 		$extra_classes = $data['extra_classes'];
+	} else {
+		$extra_classes = '';
 	}
 	if (!empty($data['popup_data'])) {
 		$popup_data = $data['popup_data'];
+	} else {
+		$popup_data = '';
 	}
 	
 	// Responsiveness
@@ -1004,9 +923,7 @@ function ois_wrapper($ois, $data) {
 		// No default. In case there is some problem, right.
 	}
 
-	if (!empty($skin_margins)) {
-		//
-	} else {
+	if (empty($skin_margins)) {
 		$skin_margins = array (
 			'top' => '0px',
 			'right' => '0px',

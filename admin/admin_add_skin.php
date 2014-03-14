@@ -1,5 +1,7 @@
 <?php
 function ois_add_new() {
+	$design_to_use = '';
+	
 	ois_add_new_load_scripts();
 	//ois_update_designs_code();
 	if (isset($_GET['id'])) { // If we are editing some skin.
@@ -20,13 +22,15 @@ function ois_add_new() {
 			foreach ($skins as $some_skin) {
 				if ($dup_id == $some_skin['id']) {
 					$this_skin = $some_skin;
-					break;
+					$skin_id = '';
+					break; // this is probably poor design
 				}
 			}
 		}
 	} else {
 		$this_skin = null;
 		$dup_skin = null;
+		$skin_id = '';
 	}
 	$skin_designs = get_option('ois_designs');
 	if (!$skin_designs) {
@@ -107,8 +111,6 @@ function ois_add_new() {
 		$skin_to_use = $this_skin['id'];
 		if (!empty($this_skin['design'])) {
 			$design_to_use = $this_skin['design'];
-		} else {
-			$design_to_use = '';
 		}
 		
 		if ($skin_id && $skin_id != '') {
@@ -221,7 +223,8 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 			foreach ($design['appearance'] as $section => $values) {
 				foreach ($values as $placeholder => $value) {
 					if (!empty($value)) {
-						$num_vals[$number]++;
+						if (isset($num_vals[$number]))
+							$num_vals[$number]++;
 					}
 				}
 			}
@@ -897,7 +900,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 							id="newskin_status"
 							value="publish" />
 
-				<?php  if ($skin_id && $skin_id != '') { ?>
+				<?php  if ($skin_id != '') { ?>
 					<input 	type="hidden"
 							name="newskin_current_skin"
 							id="newskin_current_skin"
@@ -907,7 +910,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 ?>
 					<div style="text-align:center; margin-right:300px;">
 		<?php  
-		if ($skin_id && $skin_id != '') {
+		if ($skin_id != '') {
 			if ($this_skin['status'] == 'draft') {
 				ois_super_button(array('value'=>'Publish this Skin', 'style' => '
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=\'rgb(104, 231, 127)\', endColorstr=\'#000000\');
@@ -1237,16 +1240,28 @@ function ois_handle_new_skin() {
 				$custom_email = $_POST['newskin_custom-email'];
 			}
 		$redirect_url = $_POST['newskin_redirect'];
-		$hidden_name_1 = $_POST['newskin_hidden_name_1'];
-		$hidden_name_2 = $_POST['newskin_hidden_name_2'];
-		$hidden_name_3 = $_POST['newskin_hidden_name_3'];
-		$hidden_name_4 = $_POST['newskin_hidden_name_4'];
-		$hidden_name_5 = $_POST['newskin_hidden_name_5'];
-		$hidden_value_1 = $_POST['newskin_hidden_value_1'];
-		$hidden_value_2 = $_POST['newskin_hidden_value_2'];
-		$hidden_value_3 = $_POST['newskin_hidden_value_3'];
-		$hidden_value_4 = $_POST['newskin_hidden_value_4'];
-		$hidden_value_5 = $_POST['newskin_hidden_value_5'];
+		
+		// Set the hidden values:
+		// There are six
+		$hidden = array();
+		for ($i = 0; $i < 5; $i++)
+		{
+			if (isset($_POST['newskin_hidden_name_' + $i]))
+			{
+				$hidden['hidden_name_' + $i] = $_POST['newskin_hidden_name_' + $i];
+			} // if isset post[hidden name] 
+			else {
+				$hidden['hidden_name_' + $i] = '';
+			} // else
+			if (isset($_POST['newskin_hidden_value_' + $i]))
+			{
+				$hidden['hidden_value_' + $i] = $_POST['newskin_hidden_value_' + $i];
+			} // if isset post[hidden name] 
+			else {
+				$hidden['hidden_value_' + $i] = '';
+			} // else
+			
+		} // for i in range(5)
 		
 		$split_testing = $_POST['newskin_split_testing'];
 
@@ -1357,16 +1372,6 @@ function ois_handle_new_skin() {
 			'margin_type' => $margin_type,
 			'social' => '',
 			'redirect_url' => $redirect_url,
-			'hidden_name_1' => $hidden_name_1,
-			'hidden_name_2' => $hidden_name_2,
-			'hidden_name_3' => $hidden_name_3,
-			'hidden_name_4' => $hidden_name_4,
-			'hidden_name_5' => $hidden_name_5,
-			'hidden_value_1' => $hidden_value_1,
-			'hidden_value_2' => $hidden_value_2,
-			'hidden_value_3' => $hidden_value_3,
-			'hidden_value_4' => $hidden_value_4,
-			'hidden_value_5' => $hidden_value_5,
 
 			'special_fade' => $special_fade,
 			'fade_sec' => $fade_sec,
@@ -1386,6 +1391,8 @@ function ois_handle_new_skin() {
 			'disable_mobile' => $disable_mobile,
 			'id' => $id,
 		);
+		
+		array_merge($skin_data, $hidden);
 		$existing_skins = get_option('ois_skins');
 
 		/* Now, if we're *editing* a skin, it's going to be a little different
