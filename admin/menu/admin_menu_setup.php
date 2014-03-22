@@ -5,9 +5,12 @@ function ois_admin_actions() {
 	// Create Option for General Settings
 	//update_option('ois_validation', 'no');
 	$validated = get_option('ois_validation');
-	if (trim($validated) != 'yes') {
+	if (trim($validated) != 'yes')
+	{
 		add_menu_page('Validation of Purchase', 'OptinSkin', 'manage_options', 'addskin', 'ois_validation', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
-	} else {
+	} // if
+	else
+	{
 		// Create menu
 		//add_menu_page( 'OptinSkin', 'OptinSkin', 'manage_options', 'optinskin', 'ois_dash', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
 		add_menu_page( 'OptinSkin', 'OptinSkin', 'manage_options', 'addskin', 'ois_add_new', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
@@ -17,43 +20,49 @@ function ois_admin_actions() {
 
 		// Create Options for All Existing OptINSkins
 		$existing_skins = get_option( 'ois_skins' );
-		// If there are no existing skins, make a "Your First Skin"
-		if ( !$existing_skins || empty( $existing_skins )) {
-			$existing_skins = array (
-				uniqid()  => array (
-					'name' => 'Default Skin',
-				),
-			);
-			//update_option('ois_skins', $existing_skins);
-		}
 
 		$stats_disable = get_option('stats_disable');
-		$num_drafts = 0;
+/* 		$num_drafts = 0; */
 		$num_trash = 0;
 		if (!empty($existing_skins)) {
-			foreach ( $existing_skins as $skin_code => $skin ) {
+			foreach ( $existing_skins as $skin_id => $skin ) {
 				// Extract data about skin.
 				$skin_name = $skin['title'];
-				$skin_id = $skin['id'];
 				// but only add a page if this is published.
-				if ($skin['status'] == 1 ||
-					$skin['status'] == 'publish') {
+				if ($skin['status'] == 'publish') 
+				{
 					// Create the option page for this specific existing skin.
-					add_submenu_page( 'addskin', $skin_name, $skin_name, 'manage_options', 'ois-' . $skin_id, 'ois_setup_edit_skin' );
-				} else if ($skin['status'] == 'draft') {
-						$num_drafts++;
-					} else if ($skin['status'] == 'trash') {
-						$num_trash++;
-					}
-			}
-		}
-		if ($num_drafts > 0) {
+				add_submenu_page( 'addskin', $skin_name, $skin_name, 'manage_options', 'ois-' . $skin_id, 'ois_setup_edit_skin' );
+				}  // if
+				/*
+else if ($skin['status'] == 'draft') 
+				{
+					$num_drafts++;
+				}  // else if
+*/
+/*
+				else if ($skin['status'] == 'trash') 
+				{
+					$num_trash++;
+				} // else if
+*/
+			} // foreach
+		} // if
+		/*
+if ($num_drafts > 0) 
+		{
 			add_submenu_page( 'addskin', 'Drafts (' . $num_drafts . ')', 'Drafts (' . $num_drafts . ')', 'manage_options', 'ois-drafts', 'ois_view_drafts' );
-		}
-		if ($num_trash > 0) {
+		} // if
+*/
+/*
+		if ($num_trash > 0) 
+		{
 			add_submenu_page( 'addskin', 'Trash (' . $num_trash . ')', 'Trash (' . $num_trash . ')', 'manage_options', 'ois-trash', 'ois_view_trash' );
-		}
-
+		} // if
+*/
+		
+		// Option to export skins
+		add_submenu_page( 'addskin', 'Export Skins', 'Export Skins', 'manage_options', 'oisexport', 'ois_export_skins' );
 
 		add_submenu_page( 'addskin', 'Create a Design', 'Create a Design', 'manage_options', 'create-design', 'ois_custom' );
 		add_submenu_page( 'addskin', 'Manage Designs', 'Manage Designs', 'manage_options', 'ois-manage-designs', 'ois_manage_designs' );
@@ -63,7 +72,7 @@ function ois_admin_actions() {
 		}
 		// Not ready yet :)
 		//add_submenu_page( 'optinskin', 'OptinBar', 'OptinBar', 'manage_options', 'ois-optinbar', 'ois_optinbar' );
-		
+
 		add_submenu_page( 'addskin', 'Get More Designs', 'Get More Designs', 'manage_options', 'ois-add-designs', 'ois_add_designs' );
 
 		add_submenu_page( 'addskin', 'General Settings', 'General Settings', 'manage_options', 'optinskin-settings', 'ois_general_settings' );
@@ -83,15 +92,15 @@ function ois_admin_actions() {
 
 function ois_dash() {
 	ois_section_title('OptinSkin Dashboard', 'Review Your OptinSkin Usage');
-	
-	?>
+
+?>
 	<style type="text/css">
 		.ois_dash_question {
 			font-weight: bold;
 			margin-right: 5px;
 		}
 		.ois_dash_answer {
-		
+
 		}
 	</style>
 	<table class="widefat">
@@ -101,7 +110,7 @@ function ois_dash() {
 		</thead>
 		<tr>
 			<td>
-				
+
 			</td>
 		</tr>
 		<tr>
@@ -110,7 +119,7 @@ function ois_dash() {
 				<span class="ois_dash_answer">5</span>
 			</td>
 			<td>
-				
+
 			</td>
 		</tr>
 	</table>
@@ -122,10 +131,10 @@ function ois_add_designs () {
 	// then obviously just use the styles that came with the plugin.
 	$all_designs = get_option('ois_all_designs');
 	$included_designs = get_option('ois_designs');
-	
+
 	if (isset($_GET['id'])) {
 		if (check_admin_referer('add_design')) {
-		
+
 			foreach ($all_designs as $design) {
 				if ($design['id'] == $_GET['id']) {
 					$id = (1 + count($included_designs));
@@ -133,14 +142,14 @@ function ois_add_designs () {
 					update_option('ois_designs', $included_designs);
 				}
 			}
-		
+
 			ois_notification('A new design has been added!', '', '');
 		}
 	}
-	
+
 	ois_section_title('Add Designs', 'Add Designs to Use in Your Skins', '');
-	
-	
+
+
 	echo '<table class="widefat">';
 	echo '<thead>
 		<th>Design Preview</th>
@@ -163,7 +172,7 @@ function ois_add_designs () {
 }
 
 function ois_design_row ($design) {
-	
+
 	$inc_des = array();
 	if (!empty($included_designs)) {
 		foreach ($included_designs as $inc) {
@@ -187,12 +196,12 @@ function ois_design_row ($design) {
 	} else {
 		$design_id = 'unknown';
 	}
-	
+
 	$uri = explode('?', $_SERVER['REQUEST_URI']);
 	$design_adding_url = $uri[0] . '?page=ois-add-designs';
 	$design_adding_url = wp_nonce_url($design_adding_url, 'add_design') . '&id=' . $design_id;
 	$design_updating_url = wp_nonce_url($design_adding_url, 'add_design') . '&update=' . $design_id;
-	
+
 	echo '<tr>';
 	echo '<th class="alternate">';
 	echo '<div class="ois_preview_header" ></div>';
@@ -228,21 +237,20 @@ function ois_setup_edit_skin() {
 				break;
 			}
 		}
-		include_once 'admin_edit_skin.php';
 		ois_edit_skin($skin);
 	} else {
 		'<p>Sorry, no such skin exists.</p>';
 	}
 }
 
-function ois_validation() {	
+function ois_validation() {
 	$validated = get_option('ois_validation');
 	ois_section_title('Validation of Purchase', 'Thank you for buying OptinSkin&trade;. Please validate your purchase before using the plugin.', '');
 	if (isset($_POST['userID'])) {
 		update_option('ois_user_id', $_POST['userID']);
 		update_option('ois_validation', 'yes');
 	}
-/*
+	/*
 	if (isset($_POST['ois_validation_input'])) {
 		$ch = curl_init('http://www.optinskin.com/optipass.php');
 		$secret = 'lilyjensen55cc3';
@@ -471,7 +479,7 @@ function ois_validation() {
 			</table>
 		</form>
 	</div>
-	
+
 	<script type="text/javascript">
 		jQuery(document).ready(function ($) {
 			$('#os-validation-form').submit(function (e) {
@@ -481,9 +489,9 @@ function ois_validation() {
 				var userID = $('#ois_validation_id').val();
 				var license = $('#ois_validation_input').val();
 				//alert(userID + ": " + license);
-				
+
 				Parse.initialize("6KDQYUfjkBLaVwXeX9D6zJKWq9Ba4x0FxOs21foH", "YlBjiXA7CWZwA6wpsAiHvwnG2PUd7tFG0ZmDJFQ4");
-				
+
 				var LicenseObject = Parse.Object.extend("License");
 				var query = new Parse.Query(LicenseObject);
 				query.equalTo("userID", userID);
@@ -511,10 +519,10 @@ function ois_validation() {
 										validated: true,
 									}
 								}).success(function() {<?php
-									$cur_location = explode("?", $_SERVER['REQUEST_URI']);
-									$new_location = 'http://' . $_SERVER["HTTP_HOST"] . 
-										$cur_location[0] . '?page=addskin' 
-									?>window.location.href = '<?php echo $new_location ?>';
+		$cur_location = explode("?", $_SERVER['REQUEST_URI']);
+		$new_location = 'http://' . $_SERVER["HTTP_HOST"] .
+			$cur_location[0] . '?page=addskin'
+		?>window.location.href = '<?php echo $new_location ?>';
 								});
 							});
 					      }
@@ -524,10 +532,10 @@ function ois_validation() {
 				      }
 				  },
 				  error: function(error) {
-				    
+
 				  }
 				});
-				
+
 				/*
 				This creates a new license key!
 var LicenseObject = Parse.Object.extend("License");

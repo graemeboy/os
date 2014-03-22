@@ -1,15 +1,20 @@
 jQuery(document).ready(function($){
+
+/* Show the loading gif page load */
+/*
 $(window).load(function() {
 	$('#ois_add_loader').hide('slow');
 });
+*/
+
+/* Draft function */
 $('#ois_save_draft').click(function() {
 	$('#newskin_status').val('draft');
 });
 
-function ois_calc_completion() {
-	// Depreciated.
-}
-
+/*
+	Do all the nice little things for input validation.
+*/
 $('.ois_optin_account_input').blur(function() {
 	var number = $(this).attr('number');
 	var account = $(this).attr('account');
@@ -76,15 +81,23 @@ $('.ois_optin_choice').change(function() {
 	$('.ois_optin_account').hide();
 	$('.ois_optin_' + $(this).val()).show();
 });
+/*
 var original_design = $('#ois_original_design_0').html();
 var cur_design = original_design;
+*/
 
+/*
 $('.ois_add_appearance').keyup(function() {
 	ois_update_preview(this);
 });
 $('select.ois_add_appearance').change(function() {
 	ois_update_preview(this);
 });
+*/
+
+/*
+
+Update the Preview
 	
 function ois_update_preview(self) {
 	var val_for = $(self).attr('name');
@@ -105,7 +118,11 @@ function ois_update_preview(self) {
 	$('#link-color_example_' + insigma).css("background-color", $(self).val());
 	$('#ois_actual_design_' + design_id).html(cur_design);
 }
+*/
 
+
+/*
+Color picker
 $('.ois_color_picker').each(function() {
 	var id = $(this).attr('id');
 	var id_parts = id.split('_');
@@ -120,6 +137,8 @@ $('.ois_color_picker').each(function() {
 		return false;
 	});
 });
+
+
 
 $('.ois_picker_a, .ois_pickcolor').click(function() {
 	var id = $(this).attr('id');
@@ -155,7 +174,12 @@ $(document).click(function() {
 	});
 	$('.ois_picker_a').val('Select a Color');
 });
+*/
 
+
+/*
+	Minimization for the headers
+*/
 $('.ois_header_min').click(function() {
 	var self = $(this);
 	$(this).parent().parent().parent().parent().parent().find('tr').each(function() {

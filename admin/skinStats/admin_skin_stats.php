@@ -2,28 +2,27 @@
 
 function ois_edit_skin($skin) {
 	if (isset($_GET['delete'])) {
-		if (check_admin_referer('trash')) {
+		if (check_admin_referer('trash')) 
+		{
 			// Now we can delete the skin!
 			$all_skins = get_option('ois_skins');
 			$id = $_GET['delete'];
-			if (!empty($all_skins)) {
-				foreach ($all_skins as $num=>$la_skin) {
-					if ($la_skin['id'] == $id) {
-						$all_skins[$num]['status'] = 'trash';
-						break;
-					}
-				}
+			if (!empty($all_skins)) 
+			{
+				$all_skins[$id]['status'] = 'trash';
 				update_option('ois_skins', $all_skins);
-				$cur_location = explode("?", $_SERVER['REQUEST_URI']);
-				$new_location =
-					'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin&update=trash';
-				echo '<script type="text/javascript">
-						window.location = "' . $new_location . $updated_message . '";
-					</script>';
-			}
-		}
-
-	} else if (isset($_GET['draft'])) {
+			} // if
+			$cur_location = explode("?", $_SERVER['REQUEST_URI']);
+			$new_location = 'http://' . 
+				$_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin&update=trash';
+			echo '<script type="text/javascript">
+					window.location = "' . $new_location . $updated_message . '";
+			</script>';
+		} // if
+	} // if delete
+	
+	/*
+else if (isset($_GET['draft'])) {
 			if (check_admin_referer('draft')) {
 				// Now we can delete the skin!
 				$all_skins = get_option('ois_skins');
@@ -44,24 +43,32 @@ function ois_edit_skin($skin) {
 					</script>';
 				}
 			}
-		} else {
+		}
+*/
+	else 
+	{
 		if (isset($_GET['range'])) {
 			$stats_range = $_GET['range'];
 		} else {
 			$stats_range = 20;
 		}
-
-		if (isset($_POST['newskin_design_section'])) {
-			ois_handle_edit_skin();
-		}
-		if (isset($_GET['updated']) && $_GET['updated'] == 'true') {
+		
+		if (isset($_GET['updated']) && $_GET['updated'] == 'true') 
+		{
 			ois_notification('Successfully Updated Your Skin!', 'margin: 5px 0 0 0 ;', '');
-		} else if (isset($_GET['created']) && $_GET['created'] == 'true') {
+		} // if
+		
+		else if (isset($_GET['created']) && $_GET['created'] == 'true') 
+		{
 				$uri = explode('?', $_SERVER['REQUEST_URI']);
 				$stats_url = $uri[0] . '?page=stats';
-				ois_notification('Your new skin is now live on your site. If you enabled split-testing, you can view how it is performing <a href="' . $stats_url . '">here</a>.', 'margin: 5px 0 0 0 ;', '');
-			}
-		ois_section_title(stripslashes($skin['title']), stripslashes($skin['description']), '');
+				ois_notification('Your new skin is now live on your site.' .
+					'If you enabled split-testing, you can view how it is performing <a href="' .
+					 $stats_url . '">here</a>.', 'margin: 5px 0 0 0 ;', '');
+		} // else if
+			
+		ois_section_title('Skin Performance', 
+			stripslashes($skin['title']), stripslashes($skin['description']));
 
 		$feedburner_id = get_option('ois_feedburner_id');
 		$mailchimp_id = get_option('ois_mailchimp_id');
@@ -75,18 +82,18 @@ function ois_edit_skin($skin) {
 		);
 
 		//$all_stats = get_option('ois_stats');
+		$skin_id = $skin['id'];
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'optinskin';
-		$sql = "SELECT * FROM $table_name ORDER BY ts DESC";
+		$sql = "SELECT * FROM $table_name WHERE skin='$skin_id' ORDER BY ts DESC";
 		$rows = $wpdb->get_results($sql);
 		$all_stats = array();
 		foreach ($rows as $row) {
-			$skin_id = $row->skin;
 			$submission = $row->submission;
 			$timestamp = $row->ts;
 			$post = $row->post;
 			if ($submission == 1) {
-				$submission = 'yes'; 
+				$submission = 'yes';
 				// just the convention used here; as per Wordpress accepted style.
 			} else {
 				$submission = 'no';
@@ -104,29 +111,32 @@ function ois_edit_skin($skin) {
 
 		if (!empty($all_stats)) {
 			foreach ($all_stats as $stats) {
-				if (!empty($stats['s'])) {
-					if ($stats['s'] == $skin['id']) {
-						if (!empty($stats['m']) && $stats['m'] == 'yes') {
-							array_push($submits, $stats);
-						} else {
-							array_push($impressions, $stats);
-						}
-					}
-				}
-			}
-		}
+				if (!empty($stats['m']) && $stats['m'] == 'yes') 
+				{
+					array_push($submits, $stats);
+				} // if
+				else 
+				{
+					array_push($impressions, $stats);
+				} // else
+			} // foreach
+		} // id
 		$uri = explode('?', $_SERVER['REQUEST_URI']);
 		$edit_url = $uri[0] . '?page=addskin&id=' . $skin['id'];
 		$dup_url = $uri[0] . '?page=addskin&duplicate=' . $skin['id'];
+		$export_url = $uri[0] . '?page=oisexport&skin=' . $skin['id'];
 ?>
-	<div class="ois_rolo_description"></div>
+
 	<div>
-	<h2 class="nav-tab-wrapper">
-		<a href="<?php echo $_SERVER['REQUEST_URI']; ?>" class="nav-tab nav-tab-active">Skin Performance</a>
-		<a href="<?php echo $edit_url; ?>" class="nav-tab">Edit Skin</a>
-		<a href="<?php echo $dup_url; ?>" class="nav-tab">Duplicate Skin</a>
-		<a 	class="nav-tab" href="<?php echo wp_nonce_url( $_SERVER['REQUEST_URI'], 'trash'); ?>&delete=<?php echo $skin['id']; ?>">Delete Skin</a>
-	</h2>
+		<h2 class="nav-tab-wrapper">
+			<a href="<?php echo $_SERVER['REQUEST_URI']; ?>" class="nav-tab nav-tab-active"><span class="glyphicon glyphicon-signal"></span> Skin Performance</a>
+			<a href="<?php echo $edit_url; ?>" class="nav-tab"><span class="glyphicon glyphicon-edit"></span> Edit Skin</a>
+			<a href="<?php echo $dup_url; ?>" class="nav-tab"><span class="glyphicon glyphicon-plus"></span> Duplicate Skin</a>
+			<a href="<?php echo $export_url; ?>" class="nav-tab"><span class="glyphicon glyphicon-export"></span> Export Skin as HTML</a>
+			<a 	class="nav-tab" href="<?php 
+				echo wp_nonce_url( $_SERVER['REQUEST_URI'], 'trash'); 
+			?>&delete=<?php echo $skin['id']; ?>"><span class="glyphicon glyphicon-trash"></span> Delete Skin</a>
+		</h2>
 	</div>
 	<?php //echo "impressions";print_r($impressions); ?>
 
@@ -164,24 +174,24 @@ function ois_edit_skin($skin) {
 				padding: 5px;
 				background-color: #fffeee;
 				border: 1px dashed #fff222;
-				font-family: "Georgia";
 			}
 			.ois_stats_table {
 				margin-top: 10px !important;
 			}
 		</style>
+		<link href="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 			<table class="widefat" style="width:95%; margin: 10px 0;">
 			<tbody>
 				<tr class="alternate">
 					<td>
-			<h3 style="margin:5px 0;">Custom Positioning</h3>
+			<h3 style="margin:5px 0;">How to embed this skin in a custom position</h3>
 			<p style="line-height:20px;">
 				To use this skin as a shortcode, simply put
-				<span class="ois_code_snippet" id="ois_use_shortcode">[ois skin="<?php echo $skin['title']; ?>"]</span> into any of your posts.<br/>To use it on a php page, such as <em>header.php</em> or <em>footer.php</em>, use the php code
-				<span class="ois_code_snippet" id="ois_do_shortcode">&lt;?php echo do_shortcode( '[ois skin="<?php echo $skin['title']; ?>"]' ); ?&gt;</span>.<br/>
-				If you want to split-test using the shortcode, use it like this:
-				<span class="ois_code_snippet" id="ois_other_shortcode">[ois skin="<?php echo $skin['title']; ?>" split="Name of Skin To Test"]</span>
-				, or <span class="ois_code_snippet" id="ois_other2_shortcode">[ois skin="<?php echo $skin['title']; ?>" split="Other Skin 1, Other Skin 2"]</span>
+				<span class="ois_code_snippet" id="ois_use_shortcode">[ois skin="<?php echo $skin['id']; ?>"]</span> into any of your posts.<br/>To use it on a php page, such as <em>header.php</em> or <em>footer.php</em>, use the php code
+				<span class="ois_code_snippet" id="ois_do_shortcode">&lt;?php echo do_shortcode( '[ois skin="<?php echo $skin['id']; ?>"]' ); ?&gt;</span>.<br/>
+				If you want to split-test using the shortcode, add other skin ID inside of split="". For example: 
+				<span class="ois_code_snippet" id="ois_other_shortcode">[ois skin="<?php echo $skin['id']; ?>" split=""]</span>
+				, or <span class="ois_code_snippet" id="ois_other2_shortcode">[ois skin="<?php echo $skin['id']; ?>" split="7,8"]</span>
 			</p>
 		</div>
 		</td>
@@ -237,7 +247,7 @@ function ois_edit_skin($skin) {
 						} else {
 							$day_back = strtotime('now America/Chicago');
 						}
-						$two_day_back = 
+						$two_day_back =
 							strtotime('-' . ($i + 1) . ' days America/Chicago');
 						// go through all impressions
 						if (strtotime($submit['t']) < $day_back
@@ -270,7 +280,7 @@ function ois_edit_skin($skin) {
 				tickSize: 30,
 			    ticks: [
 			    	<?php
-			
+
 			if ($stats_range <= 60) {
 				for ($i = 0; $i < $stats_range; $i++) {
 					$date = explode('-', date('Y-m-d', strtotime('-' . $i . ' days')));
@@ -338,13 +348,13 @@ function ois_edit_skin($skin) {
 						}
 						$two_day_back = strtotime('-' . ($i + 1) . ' days America/Chicago');
 						$impression_time = strtotime($impression['t']);
-						if ($impression_time < $day_back 
+						if ($impression_time < $day_back
 							&& $impression_time > $two_day_back) {
 							// if within this day
 							$x++;
 							//echo 'Yes!';
 						} else {
-							//echo "Compare: $impression_time < $day_back 
+							//echo "Compare: $impression_time < $day_back
 							//&& $impression_time > $two_day_back";
 						}
 					}
@@ -618,8 +628,7 @@ function ois_edit_skin($skin) {
 			</tr>
 			</tbody>
 			</table>
-			<div class="wrapper">
-			<div class="ois_column_left">
+			<div class="wrapper" style="width:95%;">
 			<?php
 			/*
 			ois_start_stat_table(array
@@ -664,7 +673,7 @@ function ois_edit_skin($skin) {
 ?>
 			<table class="widefat ois_stats_table">
 				<thead>
-					<th>Top 10 Posts</th>
+					<th><span class="glyphicon glyphicon-star"></span> Top 10 Posts</th>
 					<th>Signups</th>
 					<th>Impressions</th>
 					<th>Conversion Rate</th>
@@ -713,30 +722,7 @@ function ois_edit_skin($skin) {
 			</tr>
 			</tbody>
 			</table>
-			</div>
 
-			<div class="ois_column_right">
-			<table class="widefat" style="margin-bottom: 10px; margin-top: 10px;">
-				<thead>
-					<tr>
-						<th>Actions for Skin</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="alternate">
-						<td>
-							<p style="padding-top:5px;">
-								<a 	class="ois_skin_action"
-									href="<?php echo $edit_url; ?>">Edit Skin</a>
-							 | 	<a 	class="ois_skin_action"
-							 		href="<?php echo wp_nonce_url( $_SERVER['REQUEST_URI'], 'trash'); ?>&delete=<?php echo $skin['id']; ?>">Move to Trash</a>
-							 |
-							<a href="<?php echo wp_nonce_url( $_SERVER['REQUEST_URI'], 'draft'); ?>&draft=<?php echo $skin['id']; ?>">Move to Drafts</a></p>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
 			<?php
 			$num_data = get_option('ois_cleanup_period');
 			if (!$num_data) {
@@ -751,11 +737,11 @@ function ois_edit_skin($skin) {
 			ois_section_end();
 ?>
 			<div style="clear:both"></div>
-			<p	style="padding: 8px; text-align:center; margin: 45px 0 0 0;
-						-webkit-box-shadow: rgba(0, 0, 0, 0.199219) 1px 2px 3px 1px;
-		box-shadow: rgba(0, 0, 0, 0.199219) 1px 2px 3px 1px; background-color: #FCFCFC;">
-				<em>Note:</em> statistics are only kept in the database for <?php echo $num_data; ?> days, so as not to slow down the system. You can change this option in your OptinSkin&trade; settings.
+			<div style="width:95%;">
+			<p	style="padding: 8px; text-align:center; margin: 45px 0 0 0; background-color: #FCFCFC;">
+				<em>Note:</em> statistics are only kept in the database for <?php echo $num_data; ?> days, so as not to slow down the system. You can change this option in the OptinSkin General Settings page.
 			</p>
+			</div>
 			<?php
 		}
 

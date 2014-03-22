@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: OptinSkin
+Plugin Name: OptinSkin 3
 Plugin URI: http://www.optinskin.com/
 Description: OptinSkin allows you to quickly add beautiful opt-in forms and social share buttons anywhere on your blog.
 Get more subscribers with unique customisation and split-testing functionality.
-Version: 2.7
+Version: 3
 Author: ViperChill
 Author URI: http://www.viperchill.com
 */
@@ -158,12 +158,6 @@ function ois_shortcode_skin($attr) {
 // ACTIVATION HOOK AND ACTIVATION FUNCTION
 register_activation_hook( __FILE__, 'ois_activation' );
 function ois_activation() {
-	$designs = get_option('ois_designs');
-	if (count($designs) == 0) {
-		include_once 'admin/admin_data.php';
-		ois_update_designs_code();
-	}
-	
 	ois_install_database();
 	update_option('ois_table_created', 'yes');
 }

@@ -1,5 +1,6 @@
 <?php
 
+/*
 function ois_view_drafts() {
 
 	ois_section_title('Draft Skins', 'Here you can view all of your uncompleted or unpublished skins.', '');
@@ -46,20 +47,16 @@ function ois_view_drafts() {
 				$row_class = '';
 			}
 			$i++;
-			if ($skin['position'] == 'post_bottom') {
-				$position_nice = 'bottom of posts';
-			} else if ($skin['position'] == 'post_top') {
-					$position_nice = 'top of posts';
-				} else if ($skin['position'] == 'page_top') {
-					$position_nice = 'top of pages';
-				} else if ($skin['position'] == 'page_bottom') {
-					$position_nice = 'bottom of page';
-				} else if ($skin['position'] == 'sidebar') {
-					$position_nice = 'in sidebar';
-				} else if ($skin['position'] == 'custom') {
-					$position_nice = 'custom locations';
-				}
-
+			$position_nice = ois_nice_position($skin['post_position']);
+			if (isset($skin['service']))
+			{
+				$service = $skin['service'];
+			} // if
+			else
+			{
+				$service = 'None';
+			} // else
+			
 			$uri = explode('?', $_SERVER['REQUEST_URI']);
 			$edit_url = $uri[0] . '?page=addskin&id=' . $skin['id'];
 			$delete_url = $uri[0] . '?page=ois-drafts';
@@ -89,7 +86,7 @@ function ois_view_drafts() {
 ?>
 				</td>
 				<td>
-				<?php echo ucwords($skin['optin_service']); ?>
+				<?php echo ucwords($service); ?>
 				</td>
 				<td>
 					<?php echo ucwords($position_nice); ?>
@@ -117,6 +114,7 @@ function ois_view_drafts() {
 	<?php
 	ois_section_end();
 }
+*/
 
 function ois_manage_designs() {
 
@@ -247,12 +245,12 @@ function ois_view_trash() {
 			$skins = get_option('ois_skins');
 			foreach ($skins as $num=>$skin) {
 				if ($skin['id'] == $id) {
-					$skins[$num]['status'] = 'draft';
+					$skins[$num]['status'] = 'publish';
 					break;
 				}
 			}
 			update_option('ois_skins', $skins);
-			ois_notification('Your Design has Been Successfully Revived as a Draft! ', '', 'drafts');
+			ois_notification('Your Design has Been Successfully Revived', '', '');
 		}
 	}
 ?>
@@ -280,19 +278,15 @@ function ois_view_trash() {
 				$row_class = '';
 			}
 			$i++;
-			if ($skin['position'] == 'post_bottom') {
-				$position_nice = 'bottom of posts';
-			} else if ($skin['position'] == 'post_top') {
-					$position_nice = 'top of posts';
-				} else if ($skin['position'] == 'page_top') {
-					$position_nice = 'top of pages';
-				} else if ($skin['position'] == 'page_bottom') {
-					$position_nice = 'bottom of page';
-				} else if ($skin['position'] == 'sidebar') {
-					$position_nice = 'in sidebar';
-				} else if ($skin['position'] == 'custom') {
-					$position_nice = 'custom locations';
-				}
+			$position_nice = ois_nice_position($skin['post_position']);
+			if (isset($skin['service']))
+			{
+				$service = $skin['service'];
+			} // if
+			else
+			{
+				$service = 'None';
+			} // else
 
 			$uri = explode('?', $_SERVER['REQUEST_URI']);
 			$revive_url = $uri[0] . '?page=ois-trash';
@@ -308,7 +302,7 @@ function ois_view_trash() {
 					<div class="row-actions">
 						<a href="<?php
 			echo wp_nonce_url($revive_url, 'revive'); ?>&revive=<?php echo $skin['id'] ?>">
-							Revive as Draft
+							Publish Skin
 						</a>
 						 |
 						<a href="<?php
@@ -325,7 +319,7 @@ function ois_view_trash() {
 ?>
 				</td>
 				<td>
-				<?php echo ucwords($skin['optin_service']); ?>
+				<?php echo $service; ?>
 				</td>
 				<td>
 					<?php echo ucwords($position_nice); ?>
@@ -393,6 +387,23 @@ function ois_error_log() {
 	<?php
 
 	ois_section_end();
+}
+
+function ois_nice_position($post_position)
+{
+	switch ($post_position)
+	{
+		case 'post_bottom':
+			return 'bottom of posts';
+		case 'post_top':
+			return 'top of posts';
+		case 'sidebar':
+			return 'in sidebar';
+		case 'custom':
+			return 'custom locations';
+		case 'page_bottom':
+			return 'bottom of pages';
+	} // switch
 }
 
 ?>

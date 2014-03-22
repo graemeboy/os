@@ -1,0 +1,83 @@
+/*
+	Stylesheet for OptinSkin; ID: 7.
+	Generated: March 21, 2014, 4:40 pm
+*/
+/* From original stylesheet */
+.ois-1-inner
+{
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05) !important;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05) !important;
+	border-style: solid !important;
+}
+/* End original stylesheet */
+/* Google Font stylesheets */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lora'), local('Lora-Regular'), url(http://themes.googleusercontent.com/static/fonts/lora/v7/4A-myfZX6oDr9CtSTkTGig.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Droid Sans'), local('DroidSans'), url(http://themes.googleusercontent.com/static/fonts/droidsans/v4/s-BiyweUPV0v-yRb-cjciC3USBnSvpkopQaUR-2r7iU.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ubuntu'), url(http://themes.googleusercontent.com/static/fonts/ubuntu/v5/2Q-AW1e_taO6pHwMXcXW5w.ttf) format('truetype');
+}
+/* End Google Fonts */
+/* Generated from custom design options */
+.ois-1-outer {
+	width: 200px !important;
+}
+.ois-1-inner {
+	background-color: #ecf0f1 !important;
+	border-radius: 4px !important;
+	padding-top: 10px !important;
+	padding-bottom: 10px !important;
+	padding-left: 10px !important;
+	padding-right: 10px !important;
+	border-color: #d7e0e2 !important;
+	border-width: 1px !important;
+}
+.ois-1-title {
+	color: #2c3e50 !important;
+	font-size: 26px !important;
+	font-family: 'Lora', Helvetica, sans-serif !important;
+	font-weight: 700 !important;
+	line-height: 21px !important;
+	margin-bottom: 10px !important;
+}
+.ois-1-subtitle {
+	color: #2c3e50 !important;
+	font-size: 14px !important;
+	font-family: 'Droid Sans', Helvetica, sans-serif !important;
+	line-height: 14px !important;
+	font-weight: 400 !important;
+}
+.ois-1-button {
+	width: 150px !important;
+	height: 32px !important;
+	font-size: 15px !important;
+	font-family: 'Ubuntu', Helvetica, sans-serif !important;
+	background-color: #18bc9c !important;
+	color: #ffffff !important;
+	border-color: #18bc9c !important;
+	border-width: 1px !important;
+}
+.ois-1-email-input {
+	width: 150px !important;
+	padding-top: 4px !important;
+	padding-bottom: 4px !important;
+	padding-right: 2px !important;
+	padding-left: 5px !important;
+	border-radius: 5px !important;
+	margin-bottom: 10px !important;
+	margin-top: 10px !important;
+}
+/* End custom style */
+/* End of file */

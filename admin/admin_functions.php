@@ -1,11 +1,12 @@
 <?php
-function ois_section_title($title, $subtitle, $helper) {
+function ois_section_title($title, $subtitle, $helper = '') {
 	?>
-	<script type="text/javascript" src="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/js/script.js' ?>"></script>
-	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/includes/ois_bootstrap/css/bootstrap.min.css' ?>" rel="stylesheet" />
+<!-- 	<script type="text/javascript" src="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/js/script.js' ?>"></script> -->
+<!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/includes/ois_bootstrap/css/bootstrap.min.css' ?>" rel="stylesheet" /> -->
 	
-	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/css/style.css' ?>" rel="stylesheet" />
-	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/skins/css/ois_reset.css' ?>" rel="stylesheet" />
+	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin 3/admin/css/admin_style.css' ?>" rel="stylesheet" />
+<!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/css/style.css' ?>" rel="stylesheet" /> -->
+<!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/skins/css/ois_reset.css' ?>" rel="stylesheet" /> -->
 	<?php
 	$all_designs = get_option('ois_designs');
 	if (!$all_designs) {
@@ -23,36 +24,11 @@ function ois_section_title($title, $subtitle, $helper) {
 			}
 		}
 	}
-	?>
 	
-
-	<style type="text/css">
-		#ois_header {
-			background-image: url(<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/images/header_bg.jpg) !important;
-			background-color: transparent;
-			background-repeat: no-repeat;
-			margin-top:-5px;
-			width: 100%;
-			margin-left: -19px;
-			padding: 10px 2px 5px 30px;
-			-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 1px 1px 0px;
-			box-shadow: rgba(0, 0, 0, 0.496094) 0px 1px 1px 0px;
-			border: 1px solid #333;
-			color: #fff;
-			background-color: #363636;
-			border-radius:0px;
-			-webkit-border-radius:0px;
-			-moz-border-radius:0px;
-			margin-bottom: 10px;
-		}
-	</style>
-	<?php
 	echo '<div class="wrap" style="position:relative;">
 			<div id="ois_header" style="">
 			<img src="' . WP_PLUGIN_URL . '/OptinSkin/front/images/optinskin.png" style="margin:0; height:60px; float:right; padding-top: 15px;" />
-			<h2 style="text-shadow: none; color: #FFC000;font-family: \'Lobster\', Arial !important;">' . $title . '</h2>' .
-		'<h3 style="color: #fff;">' . $subtitle . '</h3>' .
-		'<p style="color: #fff;">' . $helper . '</p>
+			<h2>' . $title . '</h2><h3>' . $subtitle . '</h3><p>' . $helper . '</p>
 		</div><div style="clear:both;"></div>';
 }
 function ois_section_end() {
