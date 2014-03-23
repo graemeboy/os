@@ -5,10 +5,10 @@ function ois_custom() {
 	ois_section_title('Create a Custom Design', 'This tool is for creating custom designs for your skins.', 'Enter  your HTML into the editor below, and preview your design as it instantly updates. Once you save, it will be available for you when you add new skins.');
 	if (!empty($_POST) && check_admin_referer('ois_custom', 'custom_design') ) {
 		// We need to save this to a file.
-		
+
 		// Custom Designs will hold an array of design ids
 		$custom_designs = get_option('ois_custom_designs');
-		
+
 		if (!isset($_POST['design_id']))
 		{
 			// We are creating a new design id
@@ -19,46 +19,54 @@ function ois_custom() {
 				{
 					$design_id++;
 				} // while
-				// We should now have a design id that isn't in use.
+				array_push($custom_designs, $design_id);
 			} // if
+			else
+			{
+				$custom_designs = array(1);
+			}
+			// We should now have a design id that isn't in use.
+			
+			update_option('ois_custom_designs', $custom_designs);
+				
 		} // if
 		else
 		{
 			$design_id = $_POST['design_id'];
 		} // else
-		
+
 		$custom_path = OIS_PATH . "customDesigns/$design_id";
-		
+
 		if ( !file_exists( $custom_path ) )
 		{
 			mkdir( $custom_path, 0777, true );
 		} // if
-		
+
 		if (isset($_POST['design_html']))
 		{
 			$html_content = $_POST['design_html'];
 			file_put_contents("$custom_path/static.html", stripslashes($html_content));
 		} // if
-		
+
 		if (isset($_POST['design_css']))
 		{
 			$css_content = $_POST['design_css'];
 			file_put_contents("$custom_path/style.css", stripslashes($css_content));
 		} // if
-		
+
 	} // if
 	else if (isset($_GET['id'])) {
-		// Editing a design
-		
-		$design_id = trim($_GET['id']);
-		$custom_path = OIS_PATH . "customDesigns/$design_id";
-		
-		if (file_exists($custom_path))
-		{
-			$this_html = file_get_contents("$custom_path/static.html");
-			$this_css = file_get_contents("$custom_path/style.css");
-		} // if
-	} // else if
+			// Editing a design
+
+			$design_id = trim($_GET['id']);
+			$custom_path = OIS_PATH . "customDesigns/$design_id";
+
+			if (file_exists($custom_path))
+			{
+				$this_html = file_get_contents("$custom_path/static.html");
+				$this_css = file_get_contents("$custom_path/style.css");
+			} // if
+		} // else if
 ?>
 
 
@@ -158,10 +166,10 @@ function ois_custom() {
 			}
 		});
 
-		$('#ois_custom_editor, #ois_custom_css_editor').keydown(function (event) 
+		$('#ois_custom_editor, #ois_custom_css_editor').keydown(function (event)
 		{
 
-			if (event.keyCode == 9) 
+			if (event.keyCode == 9)
 			{
 				var tab = "    ";
 				var t = event.target;
@@ -177,15 +185,15 @@ function ois_custom() {
 
 		            t.selectionStart = ss + tab.length;
 		            t.selectionEnd = se + tab.length;
-				} 
-				else 
+				}
+				else
 				{
 		            t.value = t.value.slice(0,ss).concat(tab).concat(t.value.slice(ss,t.value.length));
-		            if (ss == se) 
+		            if (ss == se)
 		            {
 		                t.selectionStart = t.selectionEnd = ss + tab.length;
 		            } // if
-		            else 
+		            else
 		            {
 		                t.selectionStart = ss + tab.length;
 		                t.selectionEnd = se + tab.length;
@@ -204,7 +212,7 @@ function ois_custom() {
 	</script>
 
 	<?php
-	if (isset($this_html) && trim($this_html) != '')  
+	if (isset($this_html) && trim($this_html) != '')
 	{
 		// Necessarily editing a design
 ?>
@@ -215,13 +223,13 @@ function ois_custom() {
 	<p><input type="submit" class="button-primary" value="Save Design" /></p>
 	<?php
 	wp_nonce_field('ois_custom', 'custom_design');
-	?>
+?>
 	</td></tr>
 	</tbody>
 	</table>
 	</form>
-	
-	
+
+
 	<div class="ois_custom_title" style="font-size:15px;text-align:left;padding: 17px;">How to use the HTML/CSS Editor</div>
 	<table class="widefat">
 		<tr>
@@ -229,7 +237,7 @@ function ois_custom() {
 				<div class="ois_custom_title">Step 1. Go to Custom Design Editor</div>
 				<div>The editor provides a basic way to create your own designs, and still have OptinSkin power your stats and split-testing.</div>
 			</td>
-			
+
 			<td>
 				<img class="ois_custom_screen" src="<?php echo OptinSkin_URL . 'admin/images/custom_start.png'; ?>" />
 			</td>
@@ -263,11 +271,11 @@ function ois_custom() {
 		</tr>
 	</table>
 	<div>
-		
-		
+
+
 	</div>
-	
-	
+
+
 	<style type="text/css">
 		.ois_custom_screen {
 			padding: 2px;
@@ -287,7 +295,7 @@ function ois_custom() {
 		}
 	</style>
 	<?php
-	
+
 	ois_section_end();
 
 }

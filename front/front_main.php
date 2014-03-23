@@ -2,9 +2,11 @@
 
 add_action('init', 'ois_front_setup');
 
-function ois_make_skin($skin_id) {
+function ois_make_skin($skin_id) 
+{
 	// The two CSS files required, and the one JS file required, are already enqueued.
 	$skin_path = OIS_PATH . "skins/$skin_id";
+	$skin_path = OIS_PATH . "/Skins/$skin_id";
 	$html_file = "$skin_path/static.html";
 	if (file_exists($html_file))
 	{
@@ -14,14 +16,15 @@ function ois_make_skin($skin_id) {
 	{
 		return "<!-- OptinSkin file was not found in the directory. -->";
 	}
-}
+} // ois_make_skin
 
-function ois_front_setup() {
+function ois_front_setup() 
+{
 	// Load the necessary scripts.
 	add_action('wp_enqueue_scripts', 'ois_load_scripts' );
 	add_action('wp_enqueue_scripts', 'ois_load_styles' );
 	add_filter('the_content', 'ois_content_skin', 99);
-}
+} // ois_front_setup
 
 function ois_get_optins_for_content($all_skins)
 {
@@ -43,13 +46,13 @@ function ois_get_optins_for_content($all_skins)
 				empty($exclude_posts) || !is_single($exclude_posts))
 			{
 				// we need to do something with this skin.
-				if (!empty($skin['post_position'])) 
+				if (!empty($skin['post_position']))
 				{
 					$position = $skin['post_position'];
 				}
-				else 
+				else
 				{
-					
+
 				}
 				//$non_post_positions = array('custom');
 				if ($position != 'custom')
@@ -81,7 +84,7 @@ function ois_get_optins_to_go($optins_for_content)
 			{
 				// May have opportunity for split-testing here.
 				$split_testers = array();
-								
+
 				foreach ($skins as $skin)
 				{
 					if (isset($skin['split_testing']) &&
@@ -94,7 +97,7 @@ function ois_get_optins_to_go($optins_for_content)
 						array_push($skins_to_go, $skin);
 					} // else
 				} // foreach
-				
+
 				// We need to choose one of these skins if split testing -
 				// pick one from split_testers and put in skins_to_go.
 				if (count($split_testers) > 0)
@@ -171,7 +174,7 @@ function ois_content_skin($content) {
 						{
 							$x = 0;
 						} // else
-						
+
 						// Compare x to the number that actually exists
 						if ($x == 0)
 						{
@@ -273,7 +276,7 @@ function ois_load_styles() {
 		{
 			$css_dir = OIS_PATH . "skins/$skin_id/style.css";
 			$css_url = OIS_URL . "skins/$skin_id/style.css";
-			
+
 			if (file_exists($css_dir))
 			{
 				wp_register_style( "ois-$skin_id", $css_url );

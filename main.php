@@ -26,8 +26,6 @@ add_action( 'widgets_init', 'ois_load_widgets' );
 add_action( 'wp_ajax_nopriv_ois_ajax', 'ois_submission_ajax' );
 add_action( 'wp_ajax_ois_ajax', 'ois_submission_ajax' );
 
-include_once OIS_PATH . 'skins/make_skin.php';
-
 // ADMIN AND CHECK FOR STATS CLEANUP
 if (is_admin()) {
 	//ois_install_database();

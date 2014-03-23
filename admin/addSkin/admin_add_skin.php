@@ -70,7 +70,7 @@ function ois_add_new() {
 		ois_section_title('Create a New Skin', 'Here you can design an OptinSkin&trade; to place anywhere in your Wordpress website.', '');
 
 	} // else
-	
+
 	if (isset($_GET['update']))
 	{
 		if ($_GET['update'] == 'delete')
@@ -97,6 +97,30 @@ function ois_add_new() {
 		$skin_desc = '';
 	} // else
 
+	// CUSTOM DESIGNS
+	$custom_designs = get_option('ois_custom_designs');
+	$custom_design_content = array();
+
+	if (!empty($custom_designs))
+	{
+		foreach ($custom_designs as $custom_design_id)
+		{
+			// $custom_design_id here in an integer
+			$custom_path = OIS_PATH . "customDesigns/$custom_design_id";
+			$css_url = OIS_URL . "customDesigns/$custom_design_id/style.css";
+			
+			if (file_exists($custom_path))
+			{
+				$cust_html = file_get_contents("$custom_path/static.html");
+				array_push($custom_design_content, array(
+						'html' => $cust_html,
+						'css' => $css_url // just the path is required
+					)
+				);
+			} // if
+		}
+	}
+
 	/*
 		Set hidden input to skin ID
 	*/
@@ -105,20 +129,22 @@ function ois_add_new() {
 		var skinID = <?php echo $skin_id ?>;
 		var curDesign = <?php echo $design_choice ?>;
 		var extUrl = "<?php echo OIS_EXT_URL ?>";
-		
+		var customDesigns = <?php echo json_encode($custom_design_content); ?>;
+		console.log(customDesigns);
+
 		var savedSettings = {};
 		<?php
-		// Settings
-		if (!empty($this_skin['appearance']))
+	// Settings
+	if (!empty($this_skin['appearance']))
+	{
+		echo 'savedSettings = { ';
+		foreach ($this_skin['appearance'] as $key => $val)
 		{
-			echo 'savedSettings = { ';
-			foreach ($this_skin['appearance'] as $key => $val)
-			{
-				echo "'$key': '$val', ";
-			}
-			echo ' };';
+			echo "'$key': '$val', ";
 		}
-		?>
+		echo ' };';
+	}
+?>
 	</script>
 	<?php
 
@@ -176,6 +202,8 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"><!-- for slider bars -->
 	<link href="<?php echo OIS_EXT_URL ?>normalize.css" rel="stylesheet" />
+	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
+	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 
@@ -261,11 +289,11 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	{
 		$optin_choice = $this_skin['optin-service'];
 	}
-	else 
+	else
 	{
 		$optin_choice = 'feedburner';
 	}
-	
+
 	foreach ($optin_services as $name=>$data)
 		{ ?>
 		<span class="ois-optin-choice-holder">
@@ -396,7 +424,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 		{
 			$hidden_value = '';
 		}
-		
+
 		ois_inner_label(array('title' => 'Hidden Field ' . $i,
 				'description' => 'Optional'));
 ?>
@@ -411,7 +439,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	ois_option_label(array('title' => 'Redirect Option', 'description' => 'Where will users go after they have subscribed?<br/><br/>Leave blank for no redirect.'));
 	ois_inner_label(array('title' => 'Full Redirect URL',
 			'description' => ''));
-	
+
 	if (!empty($this_skin) && isset($this_skin['redirect_url']))
 	{
 		$redirect_url = $this_skin['redirect_url'];
@@ -471,7 +499,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 		'floated_second' => 'Floated right of second paragraph',
 		'sidebar' => 'In a custom location, such as the sidebar using a widget, or post using a shortcode',
 		'below_x_paragraphs' => 'Below <input type="text" style="width:30px; height: 22px; margin:0;" class="ois_textbox" value="' . $below_x_paragraphs . '" name="below_x_paragraphs" /> paragraphs',
-/* 		'popup' => 'Popup after user has scrolled <input type="text" style="width:75px; height: 22px; margin:0;" class="ois_textbox" value="' . $scrolled_past . '" name="scrolled_past" />' */
+		/* 		'popup' => 'Popup after user has scrolled <input type="text" style="width:75px; height: 22px; margin:0;" class="ois_textbox" value="' . $scrolled_past . '" name="scrolled_past" />' */
 	);
 
 	if (isset($this_skin['position']))
@@ -626,7 +654,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	echo ' value="padding" /> Padding</span>
 		</p>';
 	ois_table_end();
-	
+
 	ois_option_label(array('title' => 'Special Effects', 'description' => 'Get more attention to your Optin-Form', 'image' => 'fade.png'));
 	ois_inner_label(array('title' => 'Fade In'));
 
@@ -648,8 +676,8 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	echo ' value="yes" /> Enable <span style="margin-left: 10px;">Fade in after <input type="text" class="ois_textbox" name="fade_sec" style="width: 45px;" value="' . $fade_sec . '" /> seconds.</span></p>';
 	echo '<p style="color: #666;">Fades into existence once the skin is visible to the user, drawing attention.</p>';
 	ois_end_option_and_table();
-	
-/*
+
+	/*
 	ois_inner_label(array('title' => 'Stick to Top'));
 	echo '<p><input type="checkbox" name="special_stick"';
 	if (isset($this_skin['special_stick']) && $this_skin['special_stick'] == 'yes')
@@ -802,7 +830,7 @@ if ($this_skin['status'] == 'draft')
 		} // if
 		else
 		{
-			
+
 		} // else
 */
 	} // if

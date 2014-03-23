@@ -3,6 +3,8 @@ var designs = {};
 jQuery(document).ready(function($) 
 {
 	var numDesigns; // holds the total number of designs
+	var numCustomDesigns = customDesigns.length;
+	console.log("Custom num: " + numCustomDesigns);
 	
 	$('#hidden-design').val(curDesign);
 	$('#hidden-skin-id').val(skinID);
@@ -36,15 +38,6 @@ jQuery(document).ready(function($)
 		$('#ois-current-design').text(curDesign);
 		// Clear the control area
 		jQuery('#ois-editing-area').html('');
-		if (curDesign in designs) {
-			data = designs[curDesign];
-			initDesign(data);
-		} // if designNum
-		else {
-			// only request the data from the external source
-			// if we don't already have it.
-			getDataFromExternal(curDesign);
-		} // else
 		
 		// Update the hidden field
 		$('#hidden-design').val(curDesign);
@@ -83,6 +76,26 @@ jQuery(document).ready(function($)
 			} // if
 		} // else
 		
+		if (curDesign in designs) 
+		{
+			data = designs[curDesign];
+			initDesign(data);
+		} // if designNum
+		else 
+		{
+			// only request the data from the external source
+			// if we don't already have it.
+			if (curDesign <= (numDesigns - numCustomDesigns))
+			{
+				getDataFromExternal(curDesign);
+			} // if
+			else
+			{
+				getCustomDesign(curDesign);
+			} // else
+			
+		} // else
+		
 	} // showDesign(int)
 	
 	function getFonts()
@@ -111,7 +124,7 @@ jQuery(document).ready(function($)
 	{
 		apiURL = extUrl + "designs_info.json";
 		$.getJSON( apiURL , function( data ) {
-			numDesigns = data.numDesigns;
+			numDesigns = data.numDesigns + numCustomDesigns;
 			// Let's update the page with this informaiton.
 			if (numDesigns > 1) // should be an integer already.
 			{
@@ -120,12 +133,20 @@ jQuery(document).ready(function($)
 			showDesign(curDesign, numDesigns);
 		});
 	}
+	
+	function getCustomDesign(curDesign)
+	{
+		//designs[numDesigns + i] = { "html": customDesigns[curDesign].html };
+		console.log(customDesigns[numDesigns - curDesign]);
+		initDesign(customDesigns[numDesigns - curDesign]);
+	}
 
 	function getDataFromExternal(designNum) {
 		apiURL = extUrl + "/design" + designNum + "/request.php?callback=?";
 		jQuery.post(apiURL, {
 			url: "hello"
 		}, function(data) {
+			console.log(data);
 			designs[designNum] = data;
 			initDesign(data);
 		}, "json"); // function (data), .post
