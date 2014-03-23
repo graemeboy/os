@@ -12,7 +12,6 @@ function ois_has_saved()
 } // ois_has_saved()
 
 function ois_add_new() {
-
 	/*
 		CHECK IF SAVED
 		If the user has saved at this point, save data and move to new page.
@@ -71,6 +70,15 @@ function ois_add_new() {
 		ois_section_title('Create a New Skin', 'Here you can design an OptinSkin&trade; to place anywhere in your Wordpress website.', '');
 
 	} // else
+	
+	if (isset($_GET['update']))
+	{
+		if ($_GET['update'] == 'delete')
+		{
+			ois_notification('Your Skin has Been Successfully Deleted', '', '');
+		} // if
+		// There could be other types here.
+	} // if
 
 	/*
 		SKIN TITLE AND DESCRIPTION
@@ -96,6 +104,21 @@ function ois_add_new() {
 	<script type="text/javascript">
 		var skinID = <?php echo $skin_id ?>;
 		var curDesign = <?php echo $design_choice ?>;
+		var extUrl = "<?php echo OIS_EXT_URL ?>";
+		
+		var savedSettings = {};
+		<?php
+		// Settings
+		if (!empty($this_skin['appearance']))
+		{
+			echo 'savedSettings = { ';
+			foreach ($this_skin['appearance'] as $key => $val)
+			{
+				echo "'$key': '$val', ";
+			}
+			echo ' };';
+		}
+		?>
 	</script>
 	<?php
 
@@ -145,17 +168,16 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 ?>
 	<!-- we need iris -->
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script><!-- for slider bars, and Iris by Automattic -->
-	<script src="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/addSkin/js/iris.min.js" type="text/javascript"></script><!-- the color-picker -->
+	<script src="<?php echo OIS_URL ?>admin/addSkin/js/iris.min.js" type="text/javascript"></script><!-- the color-picker -->
 
-	<script src="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/addSkin/js/script3.js" type="text/javascript"></script><!-- Design controls, etc. -->
+	<script src="<?php echo OIS_URL ?>admin/addSkin/js/script3.js" type="text/javascript"></script><!-- Design controls, etc. -->
 
-	<script type="text/javascript" src="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/addSkin/js/add_skin.js"></script> <!-- Validation; changes according to selected service provider; etc. -->
+	<script type="text/javascript" src="<?php echo OIS_URL ?>admin/addSkin/js/add_skin.js"></script> <!-- Validation; changes according to selected service provider; etc. -->
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"><!-- for slider bars -->
-	<link href="http://localhost:8888/designs/normalize.css" rel="stylesheet" />
-	<link href="http://localhost:8888/designs/osBoot.css" rel="stylesheet" />
-	<link href="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/addSkin/css/style.css" rel="stylesheet" />
-	<link href="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
+	<link href="<?php echo OIS_EXT_URL ?>normalize.css" rel="stylesheet" />
+	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
+	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 
 	<!-- some necessary form elements -->
 	<?php $saved = "false";  // #todo ?>
@@ -241,7 +263,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	}
 	else 
 	{
-		$optin_choice == 'feedburner';
+		$optin_choice = 'feedburner';
 	}
 	
 	foreach ($optin_services as $name=>$data)
@@ -254,7 +276,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 			echo 'checked="checked"';
 		} // if
 		?> value="<?php echo $name; ?>" />
-			<img style="padding:0 2px;margin-top:-3px;width:18px!important;" src="<?php echo OptinSkin_URL . 'admin/images/' . strtolower($name) . '.png'; ?>" /><?php
+			<img style="padding:0 2px;margin-top:-3px;width:18px!important;" src="<?php echo OIS_URL . 'admin/images/' . strtolower($name) . '.png'; ?>" /><?php
 		echo ucwords($name);
 		echo '</span> ';
 	} // foreach optin service ?>
@@ -449,7 +471,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 		'floated_second' => 'Floated right of second paragraph',
 		'sidebar' => 'In a custom location, such as the sidebar using a widget, or post using a shortcode',
 		'below_x_paragraphs' => 'Below <input type="text" style="width:30px; height: 22px; margin:0;" class="ois_textbox" value="' . $below_x_paragraphs . '" name="below_x_paragraphs" /> paragraphs',
-		'popup' => 'Popup after user has scrolled <input type="text" style="width:75px; height: 22px; margin:0;" class="ois_textbox" value="' . $scrolled_past . '" name="scrolled_past" />'
+/* 		'popup' => 'Popup after user has scrolled <input type="text" style="width:75px; height: 22px; margin:0;" class="ois_textbox" value="' . $scrolled_past . '" name="scrolled_past" />' */
 	);
 
 	if (isset($this_skin['position']))
@@ -716,7 +738,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 			'title' => 'Want to Make Money?',
 			'description' => 'Use your skin to sell OptinSkin as an affiliate, and earn more money from your website.',
 			'inner_style' => 'width:320px;' ));
-	echo '<img style="float:right;width: 140px; margin-right:40px; padding: 15px;" src="' . OptinSkin_URL . 'admin/images/clickbank.png" />';
+	echo '<img style="float:right;width: 140px; margin-right:40px; padding: 15px;" src="' . OIS_URL . 'admin/images/clickbank.png" />';
 	ois_inner_label(array('title' => 'Clickbank Username'));
 	echo '<p><input	type="text"
 					class="ois_textbox"
@@ -808,7 +830,7 @@ ois_super_button(array(
 	<div id="ois_add_loader" style="display:none">
 		<div style="margin-left:100px;margin-top:20px;margin-bottom:20px;">
 		<h2 style="padding-bottom:10px;">Loading design</h2>
-		<img src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/images/loader.gif" style="width:40px" />
+		<img src="<?php echo OIS_URL; ?>admin/images/loader.gif" style="width:40px" />
 		</div>
 	</div>
 	<?php

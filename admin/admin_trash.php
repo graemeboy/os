@@ -123,9 +123,17 @@ function ois_manage_designs() {
 	if (isset($_GET['delete'])) {
 		if (check_admin_referer('delete')) {
 			$id = $_GET['delete'];
+			
+			// Remove from list of designs
 			$designs = get_option('ois_designs');
 			unset($designs[$id]);
+			
+			// Delete content from skins directory
 			update_option('ois_designs', $designs);
+			
+			$skin_path = OIS_DIR . "/skins/$skin_id";
+			ois_recursive_rmdir(skin_path);
+			
 			ois_notification('Your Design has Been Successfully Deleted!', '', '');
 		}
 	}

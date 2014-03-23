@@ -4,9 +4,16 @@ add_action('init', 'ois_front_setup');
 
 function ois_make_skin($skin_id) {
 	// The two CSS files required, and the one JS file required, are already enqueued.
-	$skin_path = WP_PLUGIN_DIR . "/OptinSkin 3/Skins/$skin_id";
+	$skin_path = OIS_PATH . "skins/$skin_id";
 	$html_file = "$skin_path/static.html";
-	return file_get_contents($html_file);
+	if (file_exists($html_file))
+	{
+		return file_get_contents($html_file);
+	}
+	else
+	{
+		return "<!-- OptinSkin file was not found in the directory. -->";
+	}
 }
 
 function ois_front_setup() {
@@ -226,8 +233,8 @@ function ois_content_skin($content) {
 function ois_load_scripts() {
 
 	// main file
-	$script_url = WP_PLUGIN_URL . '/OptinSkin/front/js/optin.js';
-	$script_file = WP_PLUGIN_DIR . '/OptinSkin/front/js/optin.js';
+	$script_url = OIS_URL . "/front/js/optin.js";
+	$script_file = OIS_PATH . "/OptinSkin/front/js/optin.js";
 	if ( file_exists($script_file) )
 	{
 		// Depends on jQuery
@@ -257,76 +264,23 @@ function ois_load_styles() {
 	$all_skins = get_option( 'ois_skins' );
 	if (!empty($all_skins)) {
 		// Enqueue the OptinSkin normalization stylesheet
-		$style_url = 'http://localhost:8888/designs/normalize.css';
+		$style_url = OIS_EXT_URL . 'normalize.css';
 		wp_register_style( 'ois_normalize', $style_url );
 		wp_enqueue_style( 'ois_normalize' );
 
 		// Enqueue the CSS for each of the skins
 		foreach ( $all_skins as $skin_id => $skin )
 		{
-			$css_dir = WP_PLUGIN_DIR . "/OptinSkin 3/skins/$skin_id/style.css";
-			$css_url = WP_PLUGIN_URL . "/OptinSkin 3/skins/$skin_id/style.css";
+			$css_dir = OIS_PATH . "skins/$skin_id/style.css";
+			$css_url = OIS_URL . "skins/$skin_id/style.css";
 			
 			if (file_exists($css_dir))
 			{
-				echo "Looking for $css_url";
 				wp_register_style( "ois-$skin_id", $css_url );
 				wp_enqueue_style( "ois-$skin_id" );
 			} // if
 		} // foreach
 	} // if not empty
 } // ois_load_styles()
-
-/*
-function ois_load_sticky() {
-	// A script to handle the lazy loading functions.
-	$script_url = WP_PLUGIN_URL . '/OptinSkin/front/js/sticky.js';
-	$script_file = WP_PLUGIN_DIR . '/OptinSkin/front/js/sticky.js';
-	if ( file_exists($script_file) ) {
-		wp_register_script( 'ois_sticky', $script_url, array('jquery') );
-		wp_enqueue_script( 'ois_sticky' );
-	}
-
-	$waypoints_url = WP_PLUGIN_URL . '/OptinSkin/front/includes/waypoints.min.js';
-	$waypoints_file = WP_PLUGIN_DIR . '/OptinSkin/front/includes/waypoints.min.js';
-	if ( file_exists($waypoints_file) ) {
-		wp_register_script( 'ois_waypoints', $waypoints_url, array('jquery') );
-		wp_enqueue_script( 'ois_waypoints' );
-	}
-}
-*/
-
-/*
-function ois_load_fade() {
-
-	// A script to handle the lazy loading functions.
-	$script_url = WP_PLUGIN_URL . '/OptinSkin/front/js/fade_load.js';
-	$script_file = WP_PLUGIN_DIR . '/OptinSkin/front/js/fade_load.js';
-	if ( file_exists($script_file) ) {
-		wp_register_script( 'ois_fade_load', $script_url, array('jquery') );
-		wp_enqueue_script( 'ois_fade_load' );
-	}
-}
-*/
-
-/*
-function ois_popup_load() {
-	// for modal popups
-	$waypoints_url = WP_PLUGIN_URL . '/OptinSkin/front/includes/waypoints.min.js';
-	$waypoints_file = WP_PLUGIN_DIR . '/OptinSkin/front/includes/waypoints.min.js';
-	if ( file_exists($waypoints_file) ) {
-		wp_register_script( 'ois_waypoints', $waypoints_url, array('jquery') );
-		wp_enqueue_script( 'ois_waypoints' );
-	}
-
-	$script_url = WP_PLUGIN_URL . '/OptinSkin/front/js/jquery.simplemodal.js';
-	$script_file = WP_PLUGIN_DIR . '/OptinSkin/front/js/jquery.simplemodal.js';
-	if ( file_exists($script_file) ) {
-		wp_register_script( 'ois_modal', $script_url, array('jquery') );
-		wp_enqueue_script( 'ois_modal' );
-	}
-}
-*/
-
 
 ?>

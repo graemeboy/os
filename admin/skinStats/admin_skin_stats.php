@@ -6,15 +6,19 @@ function ois_edit_skin($skin) {
 		{
 			// Now we can delete the skin!
 			$all_skins = get_option('ois_skins');
-			$id = $_GET['delete'];
-			if (!empty($all_skins)) 
-			{
-				$all_skins[$id]['status'] = 'trash';
-				update_option('ois_skins', $all_skins);
-			} // if
+			$skin_id = $_GET['delete'];
+			// Remove from list of designs
+			unset($all_skins[$skin_id]);
+		
+			// Delete content from skins directory
+			update_option('ois_skins', $all_skins);
+			$skin_path = OIS_PATH . "/skins/$skin_id";
+			ois_recursive_rmdir($skin_path);
+			
+			$updated_message = '&update=delete';
 			$cur_location = explode("?", $_SERVER['REQUEST_URI']);
 			$new_location = 'http://' . 
-				$_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin&update=trash';
+				$_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin';
 			echo '<script type="text/javascript">
 					window.location = "' . $new_location . $updated_message . '";
 			</script>';
@@ -179,7 +183,7 @@ else if (isset($_GET['draft'])) {
 				margin-top: 10px !important;
 			}
 		</style>
-		<link href="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
+		<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 			<table class="widefat" style="width:95%; margin: 10px 0;">
 			<tbody>
 				<tr class="alternate">
@@ -219,7 +223,7 @@ else if (isset($_GET['draft'])) {
 		// STATISTICS //
 		$stats_disable = get_option('stats_disable');
 		if ($stats_disable != 'yes') { ?>
-		<script src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/special_includes/flot/jquery.flot.js" language="javascript" type="text/javascript"></script>
+		<script src="<?php echo OIS_URL ?>admin/special_includes/flot/jquery.flot.js" language="javascript" type="text/javascript"></script>
 		<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/special_includes/flot/excanvas.pack.js"></script><![endif]-->
 
 
@@ -583,7 +587,7 @@ else if (isset($_GET['draft'])) {
 					<p>
 						<img	style="width: 80px;"
 								src="<?php
-			echo WP_PLUGIN_URL; ?>/OptinSkin/admin/images/circle_load.gif" />
+			echo OIS_URL ?>admin/images/circle_load.gif" />
 					</p>
 					<p>Loading a Visualization of Your Data...</p>
 				</div>

@@ -1,10 +1,28 @@
 <?php
+
+// Based on: http://stackoverflow.com/a/15111679/126320
+function ois_recursive_rmdir($dir)
+{
+	$files = new RecursiveIteratorIterator(
+	    new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+	    RecursiveIteratorIterator::CHILD_FIRST
+	);
+	
+	foreach ($files as $fileinfo) {
+	    $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+	    $todo($fileinfo->getRealPath());
+	}
+	
+	rmdir($dir);
+}
+
+
 function ois_section_title($title, $subtitle, $helper = '') {
 	?>
 <!-- 	<script type="text/javascript" src="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/js/script.js' ?>"></script> -->
 <!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/includes/ois_bootstrap/css/bootstrap.min.css' ?>" rel="stylesheet" /> -->
 	
-	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin 3/admin/css/admin_style.css' ?>" rel="stylesheet" />
+	<link href="<?php echo OIS_URL . 'admin/css/admin_style.css' ?>" rel="stylesheet" />
 <!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/css/style.css' ?>" rel="stylesheet" /> -->
 <!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/skins/css/ois_reset.css' ?>" rel="stylesheet" /> -->
 	<?php
@@ -27,7 +45,7 @@ function ois_section_title($title, $subtitle, $helper = '') {
 	
 	echo '<div class="wrap" style="position:relative;">
 			<div id="ois_header" style="">
-			<img src="' . WP_PLUGIN_URL . '/OptinSkin/front/images/optinskin.png" style="margin:0; height:60px; float:right; padding-top: 15px;" />
+			<img src="' . OIS_URL . 'front/images/optinskin.png" style="margin:0; height:60px; float:right; padding-top: 15px;" />
 			<h2>' . $title . '</h2><h3>' . $subtitle . '</h3><p>' . $helper . '</p>
 		</div><div style="clear:both;"></div>';
 }
@@ -77,7 +95,7 @@ function ois_option_label($data) {
 		} else {
 			$right_padding = '50px';
 		}
-		echo '<img src="' . WP_PLUGIN_URL . '/OptinSkin/admin/images/' . $data['image'] . '" style="float:right;" />';
+		echo '<img src="' . OIS_URL . 'admin/images/' . $data['image'] . '" style="float:right;" />';
 	}
 }
 
@@ -106,10 +124,10 @@ function ois_start_table($title, $img) {
 					<th class="ois_header_title" style="font-family: \'Voces\' !important;border:none;color:#333;font-size:14px;font-weight:normal;vertical-align:middle !important;max-width:250px;text-shadow: #fff 0px 1px 0px !important;">';
 			
 		if (trim($img) != '') {
-			echo '<img src="' . WP_PLUGIN_URL . '/OptinSkin/admin/images/' . $img . '" style="height:16px;padding:0;margin:0;margin-bottom:-2px;padding-right:10px;" />';
+			echo '<img src="' . OIS_URL . 'admin/images/' . $img . '" style="height:16px;padding:0;margin:0;margin-bottom:-2px;padding-right:10px;" />';
 		}
 	echo $title . '</th>
-					<th style="border:none;color:#333;vertical-align:middle !important;"><span style="float:right;"><a class="ois_header_min" data-closed="' . WP_PLUGIN_URL . '/OptinSkin/admin/images/plus.png" data-open="' . WP_PLUGIN_URL . '/OptinSkin/admin/images/minus.png" href="javascript:void();" ><img src="' . WP_PLUGIN_URL . '/OptinSkin/admin/images/minus.png" style="height:25px;margin-bottom:-5px;" /></a></span></th>
+					<th style="border:none;color:#333;vertical-align:middle !important;"><span style="float:right;"><a class="ois_header_min" data-closed="' . OIS_URL . 'admin/images/plus.png" data-open="' . OIS_URL . '/admin/images/minus.png" href="javascript:void();" ><img src="' . OIS_URL . '/admin/images/minus.png" style="height:25px;margin-bottom:-5px;" /></a></span></th>
 				</tr>
 			</thead>';
 }

@@ -6,7 +6,7 @@
 	Postconditions: 
 		1. The new skin data is saved to the database.
 		2. A static html file, and static css file, are created on the server.
-		3. User is redirected to stats page if new skin is created; pagerefreshed if editing draft.
+		3. User is redirected to stats page if new skin is created.
 */
 function ois_handle_new_skin() 
 {
@@ -377,9 +377,6 @@ function ois_handle_new_skin()
 				$property_name = substr($name, $prepend_len, strlen($name));
 				$attr_items = explode("-", $property_name);
 				
-				//echo $property_name;
-				//echo $attr_items[0];
-				
 				if ($attr_items[0] == 'text' || $attr_items[0] == 'placeholder' || $attr_items[0] == 'textarea' || ($attr_items[0].'-'.$attr_items[1]) == 'button-text' || $attr_items[0] == 'align')
 				{ 
 					/* 
@@ -420,6 +417,25 @@ function ois_handle_new_skin()
 						// Now, replace the variable name in the template_form with this value.
 						$template_form = str_replace("{{" . $id . "}}", $val, $template_form);
 					} // else if button-text
+					else if ($attr_items[0] == 'align')
+					{
+						// Exactly the same as text.
+						$id = implode('-', array_slice( $attr_items , 1, $second_last));
+						$id = str_replace('_' . $attr_items[0], '', $id);
+						
+						$css_attr = "text-align: $val !important;";
+						$sa = explode('_', $property_name); // style attribute
+						$element = substr($sa[0], 6);
+						
+						
+						if (!empty($style[$element])) {
+							array_push($style[$element], $css_attr);
+						} // if 
+						else 
+						{
+							$style[$element] = array($css_attr);
+						} // else
+					}
 					else
 					{
 						$id = implode('-', array_slice( $attr_items , 1, $second_last));
@@ -482,35 +498,6 @@ function ois_handle_new_skin()
 		} // for each post_item
 		
 		$skin_data['appearance'] = $design_options;
-		
-		
-		/*
-				FONT (GOOGLE FONTS)
-				print_r($data_names);
-				// only get data for design we want
-				// attribute => value
-				// e.g. background-color => #fff
-				if (trim($val) == '') {
-					$val = '\\';
-				} else {
-					$val = htmlspecialchars($val);
-				}
-				$google_fonts = get_option('ois_google_fonts');
-				foreach ($google_fonts as $font) {
-					if ($val == $font) {
-						array_push($fonts_to_add, $font);
-					}
-				}
-				$design_options += array($data[1] => $val);
-			} // if post_name has prepend
-		} // for each post item
-*/		
-		/*
-echo "<h2>Skin data!</h2><pre>";
-		print_r($skin_data);
-		echo "</pre>";
-*/
-		
 		/* 
 			FADE IN EFFECT 
 			The number of seconds, if it's fading, after which it would begin to appear on the page.
@@ -555,10 +542,22 @@ echo "<h2>Skin data!</h2><pre>";
 		
 		/* UPDATE EXISTING SKINS */
 		update_option('ois_skins', $existing_skins);
-		//echo "Existing: <pre>"; print_r($existing_skins); echo "</pre>";
 
 		/* CREATE A STATIC FILES FOR THIS TEMPLATE AND STYLE */
 		// Wrap the template appropriately.
+		
+		
+		// Affiliate Options
+		if (isset($posted_items['aff_enable']) 
+			&& isset($posted_items['aff_user']))
+		{
+			// The user can use different affiliate usernames for different skins, though.
+			$aff_username = $posted_items['aff_user'];
+			// This is messy, I know.
+			$template .= '<div style="padding-top:7px;text-align:center;"><a href="http://'  . $aff_username . '.optinskin.hop.clickbank.net" style="border:none;"><img style="border:none;" src="' . WP_PLUGIN_URL . '/OptinSkin/front/images/poweredby.png" /></a></div>';
+			
+		} // if isset
+		
 		// Mobile wrapper
 		if (isset($posted_items['disable_mobile']))
 		{
@@ -573,17 +572,6 @@ echo "<h2>Skin data!</h2><pre>";
 				$template = "<div class=' visible-md visible-lg'>$template</div>";
 			} // else if
 		} // if
-		
-		// Affiliate Options
-		if (isset($posted_items['aff_enable']) 
-			&& isset($posted_items['aff_user']))
-		{
-			// The user can use different affiliate usernames for different skins, though.
-			$aff_username = $posted_items['aff_user'];
-			// This is messy, I know.
-			$template .= '<div style="padding-top:7px;"><a href="http://'  . $aff_username . '.optinskin.hop.clickbank.net" style="border:none;"><img style="border:none;" src="' . WP_PLUGIN_URL . '/OptinSkin/front/images/poweredby.png" /></a></div>';
-			
-		} // if isset
 		
 		// ois-design is crucial, and needs to wrap even the mobile wrapper.
 		$classes = 'ois-design';
@@ -621,9 +609,11 @@ echo "<h2>Skin data!</h2><pre>";
 		$cur_location = explode("?", $_SERVER['REQUEST_URI']);
 		$new_location =
 			'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=ois-' . $skin_id;
-		echo '<script type="text/javascript">
+		/*
+echo '<script type="text/javascript">
 			window.location = "' . $new_location  . '";
 		</script>';
+*/
 	} // if isset $posted_items
 } // ois_handle_new_skin()
 
@@ -674,12 +664,6 @@ function ois_render_form($skin_id, $options, $template)
 {
 	include_once('admin_form_functions.php');
 	
-	/*
-echo "<h2>Options data for $skin_id!</h2><pre>";
-	print_r($options);
-	echo "</pre>";
-*/
-
 	if (empty($options))
 	{
 		return $template; // no form at all!
@@ -715,7 +699,7 @@ echo "<h2>Options data for $skin_id!</h2><pre>";
 function ois_create_skin_files($skin_id, $template, $css_final)
 {
 	
-	$skin_path = WP_PLUGIN_DIR . "/OptinSkin 3/Skins/$skin_id";
+	$skin_path = OIS_PATH . "skins/$skin_id";
 	if ( !file_exists( $skin_path ) ) {
 		mkdir( $skin_path, 0777, true );
 	}

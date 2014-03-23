@@ -27,7 +27,7 @@ function ois_export_skins()
 		$skin_id = $_GET['skin'];
 		//$skin_to_export = $all_skins[$skin_id];
 
-		$skin_path = WP_PLUGIN_DIR . "/OptinSkin 3/Skins/$skin_id";
+		$skin_path = OIS_PATH . "/skins/$skin_id";
 		$html_file = "$skin_path/static.html";
 		$css_file = "$skin_path/style.css";
 
@@ -48,8 +48,8 @@ function ois_export_skins()
 
 
 		// Create a temporary directory with this data
-		$temp_path = WP_PLUGIN_DIR . "/OptinSkin 3/admin/exportSkin/temp/skin-$skin_id";
-		$temp_url = WP_PLUGIN_URL . "/OptinSkin 3/admin/exportSkin/temp/skin-$skin_id";
+		$temp_path = OIS_PATH . "admin/exportSkin/temp/skin-$skin_id";
+		$temp_url = OIS_URL . "admin/exportSkin/temp/skin-$skin_id";
 		$temp_html_path = "$temp_path/html";
 		$temp_css_path = "$temp_path/css";
 
@@ -98,22 +98,6 @@ function ois_export_skins()
 		} // else
 
 	}
-}
-
-// Based on: http://stackoverflow.com/a/15111679/126320
-function ois_recursive_rmdir($dir)
-{
-	$files = new RecursiveIteratorIterator(
-	    new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
-	    RecursiveIteratorIterator::CHILD_FIRST
-	);
-	
-	foreach ($files as $fileinfo) {
-	    $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-	    $todo($fileinfo->getRealPath());
-	}
-	
-	rmdir($dir);
 }
 
 ?>

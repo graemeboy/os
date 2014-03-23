@@ -3,84 +3,62 @@
 function ois_custom() {
 
 	ois_section_title('Create a Custom Design', 'This tool is for creating custom designs for your skins.', 'Enter  your HTML into the editor below, and preview your design as it instantly updates. Once you save, it will be available for you when you add new skins.');
-	if ( empty($_POST) ) {
-		// normal functioning.
-	} else if( !check_admin_referer('ois_custom', 'custom_design') ) {
-			print 'Sorry, your nonce did not verify.';
-			exit;
-	} else {
-		$html = htmlentities($_POST['design_html']);
-		$css = htmlentities($_POST['design_css']);
-		if (trim($css) == 'CSS goes here...') {
-			$css = '';
-		}
-		if (trim($html) == 'Add your custom HTML here...') {
-			$html = '';		
-		}
-		$name = htmlentities($_POST['design_name']);
-		$designs = get_option('ois_designs');
-
-		if (isset($_POST['design_id'])
-			&& trim($_POST['design_id']) != '') {
-			$id = $_POST['design_id'];
-			foreach ($designs as $ref=>$design) {
-				if ($design['id'] == $id) { // find the design id.
-					$new_design = $design; // set new design as this design.
-					break;
-				}
-			}
-			$update_message = 'Your Design has been Successfully Updated!';
-		} else {
-			$ref = (1 + count($designs));
-			$update_message = 'Your Design has been Successfully Created!';
-		}
+	if (!empty($_POST) && check_admin_referer('ois_custom', 'custom_design') ) {
+		// We need to save this to a file.
 		
-		if (!empty($new_design)) {
-			$new_design['name'] = $name;
-			$new_design['html'] = $html;
-			$new_design['css'] = $css;
-			$new_design['last_modified'] = date('Y-m-d H:i:s');
-		} else {
-			$new_design = array (
-				'title' => $name,
-				'description' => '',
-				'name' => $name,
-				'html' => $html,
-				'css' => $css,
-				'css_url' => '',
-				'date_added' => date('Y-m-d H:i:s'),
-				'last_modified' => date('Y-m-d H:i:s'),
-				'id' => $ref,
-				'custom' => 'yes',
-			);
-		}
-
-		$designs[$ref] = $new_design;
+		// Custom Designs will hold an array of design ids
+		$custom_designs = get_option('ois_custom_designs');
 		
-		update_option('ois_designs', $designs);
-
-		ois_notification($update_message, '', '');
-
-
-	}
-	if (isset($_GET['id'])) {
-		$id = trim($_GET['id']);
-		$designs = get_option('ois_designs');
-		//$cur_design = $designs[$id];
+		if (!isset($_POST['design_id']))
+		{
+			// We are creating a new design id
+			$design_id = 1;
+			if (!empty($custom_designs))
+			{
+				while (in_array($design_id, $custom_designs))
+				{
+					$design_id++;
+				} // while
+				// We should now have a design id that isn't in use.
+			} // if
+		} // if
+		else
+		{
+			$design_id = $_POST['design_id'];
+		} // else
 		
-		foreach ($designs as $design) {
-			if ($design['id'] == $id) {
-				$cur_design = $design;
-				break;
-			}
-		}
-
-		$this_css = html_entity_decode(stripslashes($cur_design['css']));
-		$this_html = html_entity_decode(stripslashes($cur_design['html']));
-	}
-
-	$designs = get_option('ois_designs');
-	//print_r($designs);
+		$custom_path = OIS_PATH . "customDesigns/$design_id";
+		
+		if ( !file_exists( $custom_path ) )
+		{
+			mkdir( $custom_path, 0777, true );
+		} // if
+		
+		if (isset($_POST['design_html']))
+		{
+			$html_content = $_POST['design_html'];
+			file_put_contents("$custom_path/static.html", stripslashes($html_content));
+		} // if
+		
+		if (isset($_POST['design_css']))
+		{
+			$css_content = $_POST['design_css'];
+			file_put_contents("$custom_path/style.css", stripslashes($css_content));
+		} // if
+		
+	} // if
+	else if (isset($_GET['id'])) {
+		// Editing a design
+		
+		$design_id = trim($_GET['id']);
+		$custom_path = OIS_PATH . "customDesigns/$design_id";
+		
+		if (file_exists($custom_path))
+		{
+			$this_html = file_get_contents("$custom_path/static.html");
+			$this_css = file_get_contents("$custom_path/style.css");
+		} // if
+	} // else if
 ?>
 
 
@@ -109,7 +87,7 @@ function ois_custom() {
 
 	<table class="widefat">
 	<thead>
-		<th>Your Design</th>
+		<th>Preview of Your Design</th>
 	</thead>
 	<tbody>
 		<tr class="alternate">
@@ -180,9 +158,11 @@ function ois_custom() {
 			}
 		});
 
-		$('#ois_custom_editor, #ois_custom_css_editor').keydown(function (event) {
+		$('#ois_custom_editor, #ois_custom_css_editor').keydown(function (event) 
+		{
 
-			if (event.keyCode == 9) {
+			if (event.keyCode == 9) 
+			{
 				var tab = "    ";
 				var t = event.target;
 			    var ss = t.selectionStart;
@@ -197,46 +177,38 @@ function ois_custom() {
 
 		            t.selectionStart = ss + tab.length;
 		            t.selectionEnd = se + tab.length;
-				} else {
+				} 
+				else 
+				{
 		            t.value = t.value.slice(0,ss).concat(tab).concat(t.value.slice(ss,t.value.length));
-		            if (ss == se) {
+		            if (ss == se) 
+		            {
 		                t.selectionStart = t.selectionEnd = ss + tab.length;
-		            }
-		            else {
+		            } // if
+		            else 
+		            {
 		                t.selectionStart = ss + tab.length;
 		                t.selectionEnd = se + tab.length;
-		            }
-		        }
-			}
-
-		});
+		            } // else
+		        } // else
+			} // if
+		}); // keydown
 
 		$('#ois_custom_editor').keyup(function (event) {
 			$('#ois_custom_update_area').html($('#ois_custom_editor').val());
-		});
+		}); // keyup
 		$('#ois_custom_css_editor').keyup(function (event) {
 			$('#ois_custom_css_update_area').html($('#ois_custom_css_editor').val());
-		});
-	});
-
+		}); // keyup
+	}); // document.ready
 	</script>
+
 	<?php
-	if (!empty($cur_design['name'])) {
-		$design_title = $cur_design['name'];
-	} else if (!empty($cur_design['title'])) {
-			$design_title = $cur_design['title'];
-		} else {
-			$design_title = 'Untitled Design';
-	}
+	if (isset($this_html) && trim($this_html) != '')  
+	{
+		// Necessarily editing a design
 ?>
-	<p>
-		Your Design's Name:
-		<input	type="text"	name="design_name"	class="ois_textbox"	value="<?php echo $design_title; ?>" />
-	</p>
-	<?php
-	if (isset($this_html) && trim($this_html) != '')  {
-?>
-			<input type="hidden" name="design_id" value="<?php echo $cur_design['id']; ?>" />
+		<input type="hidden" name="design_id" value="<?php echo $design_id; ?>" />
 			<?php
 	}
 ?>

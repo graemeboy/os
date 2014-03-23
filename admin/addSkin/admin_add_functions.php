@@ -5,7 +5,8 @@ function ois_editing_heading($skin_id, $skin_name, $status)
 	// Title
 	$subtitle = "You are Currently Editing <em>$skin_name</em></em>";
 	ois_section_title('Edit Skin', $subtitle);
-		
+	
+	
 	$uri = explode('?', $_SERVER['REQUEST_URI']);
 	$dup_url = $uri[0] . '?page=addskin&duplicate=' . $skin_id;
 ?>
@@ -83,6 +84,5 @@ function ois_add_init_table($skin_title, $skin_desc)
 			'paragraph' => true));
 	ois_option_end();
 	ois_table_end();
-
-}
+} // ois_add_init_table()
 ?>

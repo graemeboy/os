@@ -15,7 +15,7 @@ include_once 'exportSkin/admin_export_skin.php';
 
 //include_once 'admin_data.php';
 include_once 'admin_functions.php';
-include_once 'admin_drafts_trash.php';
+include_once 'admin_trash.php';
 include_once 'admin_custom.php';
 include_once 'admin_settings.php';
 
