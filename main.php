@@ -230,7 +230,7 @@ class OptinSkin_Widget extends WP_Widget {
 		$instance_key = uniqid();
 ?>
 	<div class="ois_admin_widget">
-		<h3 style="padding-top: 0;margin-top:0px;">Basic Settings</h3>
+		<h3 style="padding-top: 0;margin-top:10px;">Basic Settings</h3>
 		<p>
 			<div class="ois_admin_widget_title">Skin to Display:</div>
 			<select class="ois_widget_selection" name="<?php echo $this->get_field_name( 'skin' ); ?>">
@@ -238,7 +238,7 @@ class OptinSkin_Widget extends WP_Widget {
 		$skins = get_option('ois_skins');
 		foreach ($skins as $id=>$skin) {
 			echo '<option value="' . $id . '"';
-			if ($instance['skin'] == $id) {
+			if (isset($instance['skin']) && $instance['skin'] == $id) {
 				echo ' selected="selected" ';
 			} // if
 			echo '>' . $skin['title'] . '</option>';
@@ -261,7 +261,7 @@ class OptinSkin_Widget extends WP_Widget {
 		<?php
 		foreach ($skins as $id=>$skin) {
 			echo '<option value="' . $id . '"';
-			if ($instance['skin-b'] == $id) {
+			if (isset($instance['skin-b']) && $instance['skin-b'] == $id) {
 				echo ' selected="selected" ';
 			} // if
 			echo '>' . $skin['title'] . '</option>';
@@ -269,7 +269,7 @@ class OptinSkin_Widget extends WP_Widget {
 ?>
 		</select>
 		</div>
-		<p style="border: 1px solid #e0e0e0; border-radius: 3px; -webkit-border-radius:3px; -moz-border-radius: 3px; padding: 8px 7px; margin: 5px 0; background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fafafa), to(#e0e0e0)) !important; background-image: -moz-linear-gradient(top,  #fafafa,  #e0e0e0) !important;<?php
+		<p style="border: 1px solid #e0e0e0; padding: 7px;<?php
 		?>" id="<?php echo $instance_key; ?>_info">If split-testing is enabled, the widget will either show the first or second skin, based on a random algorithm.</p>
 		</div>
 		<style type="text/css">
