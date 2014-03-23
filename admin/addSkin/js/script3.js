@@ -1,6 +1,7 @@
 // We're going to load all design data into an assoc. array
 var designs = {};
-jQuery(document).ready(function($) { /* alert('here'); */
+jQuery(document).ready(function($) 
+{
 	var numDesigns; // holds the total number of designs
 	
 	$('#hidden-design').val(curDesign);
@@ -67,7 +68,6 @@ jQuery(document).ready(function($) { /* alert('here'); */
 		} // else
 		
 		// NEXT Design
-		console.log("num: " + numDesigns + " vs. " + curDesign);
 		if (curDesign < numDesigns)
 		{
 			if (!$('#next-design').hasClass('ois-design-change-possible'))
@@ -87,7 +87,7 @@ jQuery(document).ready(function($) { /* alert('here'); */
 	
 	function getFonts()
 	{
-		apiURL = "http://localhost:8888/designs/design_fonts.json";
+		apiURL = extUrl + "design_fonts.json";
 		$.getJSON( apiURL , function( data ) {
 			var googleFonts = data.google;
 			availableFonts = data.regular;
@@ -103,23 +103,13 @@ jQuery(document).ready(function($) { /* alert('here'); */
 				document.getElementsByTagName("head")[0].appendChild(fontLink);
 				availableFonts.push('googlefont-' + name);
 			});
-			console.log(availableFonts);
-			/*
-for (var i = 0; i < googleFonts.length(); i++)
-			{
-				
-				
-				
-";
-			}
-*/
 		});
 		
 	}
 	
 	function getDesignInfo()
 	{
-		apiURL = "http://localhost:8888/designs/designs_info.json";
+		apiURL = extUrl + "designs_info.json";
 		$.getJSON( apiURL , function( data ) {
 			numDesigns = data.numDesigns;
 			// Let's update the page with this informaiton.
@@ -132,12 +122,10 @@ for (var i = 0; i < googleFonts.length(); i++)
 	}
 
 	function getDataFromExternal(designNum) {
-		apiURL = "http://localhost:8888/designs/design" + designNum + "/request.php?callback=?";
-		//console.log(apiURL);
+		apiURL = extUrl + "/design" + designNum + "/request.php?callback=?";
 		jQuery.post(apiURL, {
 			url: "hello"
 		}, function(data) {
-			//console.log(data);
 			designs[designNum] = data;
 			initDesign(data);
 		}, "json"); // function (data), .post
@@ -146,13 +134,10 @@ for (var i = 0; i < googleFonts.length(); i++)
 	function initDesign(data) {
 		// Load the css filename
 		loadExternalCSS(data.css);
-		console.log(data.css);
 		// Load the html into the design area
 		var template = data.html;
-		//console.log('HEY HTML:' + data.html);
 		$('#hidden-template').val(template);
 		if (data.template_form) {
-			//console.log(data.template_form);
 			$('#hidden-template-form').val(data.template_form);
 			$('#hidden-template-css').val(data.css);
 			template = template.replace('{{optin_form}}', data.template_form);
@@ -230,7 +215,6 @@ for (var i = 0; i < googleFonts.length(); i++)
 				$('.' + targetElement).css({'text-align': def});
 				appendNewAlignSelection(cl, targetElement, def, desc, id);
 			}
-			//console.log(id);
 		}); // .each
 		addActionListeners();
 	} // initDesign(data)
@@ -312,7 +296,6 @@ for (var i = 0; i < googleFonts.length(); i++)
 		// There is something else cool we can do here.
 		// If the default value ends in px, we know it's an integer that will change.
 		// Therefore, we can implement a slider for such an input
-		//console.log(defaultValue.slice(-2));
 		if (defaultValue.slice(-2) == 'px') {
 			isSlider = true;
 			var defInt = defaultValue.slice(0, -2);
@@ -353,7 +336,6 @@ for (var i = 0; i < googleFonts.length(); i++)
 				min: 0,
 				max: maxInt,
 				slide: function(event, ui) {
-					//console.log(ui.value)
 					$('#' + id).val(ui.value + 'px');
 					$('.' + targetElement).css(styleAttr, ui.value + 'px');
 				}
@@ -393,7 +375,6 @@ for (var i = 0; i < googleFonts.length(); i++)
 		Post: a <link> element with href = CSSUrl is appended to document head
 	*/
 	function loadExternalCSS(CSSUrl) {
-		//console.log("Ext CSS: " + CSSUrl);
 		var fileref = document.createElement("link");
 		fileref.setAttribute("rel", "stylesheet");
 		fileref.setAttribute("type", "text/css");
@@ -427,7 +408,6 @@ for (var i = 0; i < googleFonts.length(); i++)
 		$('.ois-textarea-input').keyup(function() {
 			target = $(this).attr('data-ois-model');
 			addFromScript = addScriptsFromDef($(this).val());
-			//console.log(addFromScript);
 			$('.' + target).html(addFromScript);
 		}); // style .keyup
 		$('.ois-font-select').change(function()
@@ -486,7 +466,5 @@ for (var i = 0; i < googleFonts.length(); i++)
 	$('#ois_select_page').change(function ()
 	{
 		$('#ois_redirect_url').val($("option:selected", this).val());
-		
-
-	});
+	}); // ois_select_page.change
 }); // document.ready($)

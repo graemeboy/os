@@ -96,6 +96,7 @@ function ois_add_new() {
 	<script type="text/javascript">
 		var skinID = <?php echo $skin_id ?>;
 		var curDesign = <?php echo $design_choice ?>;
+		var extUrl = <?php echo OIS_EXT_URL ?>;
 	</script>
 	<?php
 
@@ -152,8 +153,8 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	<script type="text/javascript" src="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/addSkin/js/add_skin.js"></script> <!-- Validation; changes according to selected service provider; etc. -->
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"><!-- for slider bars -->
-	<link href="http://localhost:8888/designs/normalize.css" rel="stylesheet" />
-	<link href="http://localhost:8888/designs/osBoot.css" rel="stylesheet" />
+	<link href="<?php echo OIS_EXT_URL ?>normalize.css" rel="stylesheet" />
+	<link href="<?php echo OIS_EXT_URL ?>designs/osBoot.css" rel="stylesheet" />
 	<link href="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/addSkin/css/style.css" rel="stylesheet" />
 	<link href="<?php echo WP_PLUGIN_URL ?>/OptinSkin 3/admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 
@@ -449,7 +450,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 		'floated_second' => 'Floated right of second paragraph',
 		'sidebar' => 'In a custom location, such as the sidebar using a widget, or post using a shortcode',
 		'below_x_paragraphs' => 'Below <input type="text" style="width:30px; height: 22px; margin:0;" class="ois_textbox" value="' . $below_x_paragraphs . '" name="below_x_paragraphs" /> paragraphs',
-		'popup' => 'Popup after user has scrolled <input type="text" style="width:75px; height: 22px; margin:0;" class="ois_textbox" value="' . $scrolled_past . '" name="scrolled_past" />'
+/* 		'popup' => 'Popup after user has scrolled <input type="text" style="width:75px; height: 22px; margin:0;" class="ois_textbox" value="' . $scrolled_past . '" name="scrolled_past" />' */
 	);
 
 	if (isset($this_skin['position']))

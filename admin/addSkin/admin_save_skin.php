@@ -6,7 +6,7 @@
 	Postconditions: 
 		1. The new skin data is saved to the database.
 		2. A static html file, and static css file, are created on the server.
-		3. User is redirected to stats page if new skin is created; pagerefreshed if editing draft.
+		3. User is redirected to stats page if new skin is created.
 */
 function ois_handle_new_skin() 
 {
@@ -377,9 +377,6 @@ function ois_handle_new_skin()
 				$property_name = substr($name, $prepend_len, strlen($name));
 				$attr_items = explode("-", $property_name);
 				
-				//echo $property_name;
-				//echo $attr_items[0];
-				
 				if ($attr_items[0] == 'text' || $attr_items[0] == 'placeholder' || $attr_items[0] == 'textarea' || ($attr_items[0].'-'.$attr_items[1]) == 'button-text' || $attr_items[0] == 'align')
 				{ 
 					/* 
@@ -482,35 +479,6 @@ function ois_handle_new_skin()
 		} // for each post_item
 		
 		$skin_data['appearance'] = $design_options;
-		
-		
-		/*
-				FONT (GOOGLE FONTS)
-				print_r($data_names);
-				// only get data for design we want
-				// attribute => value
-				// e.g. background-color => #fff
-				if (trim($val) == '') {
-					$val = '\\';
-				} else {
-					$val = htmlspecialchars($val);
-				}
-				$google_fonts = get_option('ois_google_fonts');
-				foreach ($google_fonts as $font) {
-					if ($val == $font) {
-						array_push($fonts_to_add, $font);
-					}
-				}
-				$design_options += array($data[1] => $val);
-			} // if post_name has prepend
-		} // for each post item
-*/		
-		/*
-echo "<h2>Skin data!</h2><pre>";
-		print_r($skin_data);
-		echo "</pre>";
-*/
-		
 		/* 
 			FADE IN EFFECT 
 			The number of seconds, if it's fading, after which it would begin to appear on the page.
@@ -555,7 +523,6 @@ echo "<h2>Skin data!</h2><pre>";
 		
 		/* UPDATE EXISTING SKINS */
 		update_option('ois_skins', $existing_skins);
-		//echo "Existing: <pre>"; print_r($existing_skins); echo "</pre>";
 
 		/* CREATE A STATIC FILES FOR THIS TEMPLATE AND STYLE */
 		// Wrap the template appropriately.
@@ -674,12 +641,6 @@ function ois_render_form($skin_id, $options, $template)
 {
 	include_once('admin_form_functions.php');
 	
-	/*
-echo "<h2>Options data for $skin_id!</h2><pre>";
-	print_r($options);
-	echo "</pre>";
-*/
-
 	if (empty($options))
 	{
 		return $template; // no form at all!

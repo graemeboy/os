@@ -83,6 +83,5 @@ function ois_add_init_table($skin_title, $skin_desc)
 			'paragraph' => true));
 	ois_option_end();
 	ois_table_end();
-
-}
+} // ois_add_init_table()
 ?>
