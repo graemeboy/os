@@ -100,7 +100,7 @@ jQuery(document).ready(function($)
 	
 	function getFonts()
 	{
-		apiURL = extUrl + "design_fonts.json";
+		apiURL = extUrl + "design_fonts.json?callback=?";
 		$.getJSON( apiURL , function( data ) {
 			var googleFonts = data.google;
 			availableFonts = data.regular;
@@ -122,7 +122,7 @@ jQuery(document).ready(function($)
 	
 	function getDesignInfo()
 	{
-		apiURL = extUrl + "designs_info.json";
+		apiURL = extUrl + "designs_info.json?callback=?";
 		$.getJSON( apiURL , function( data ) {
 			numDesigns = data.numDesigns + numCustomDesigns;
 			// Let's update the page with this informaiton.

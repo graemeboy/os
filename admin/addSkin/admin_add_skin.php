@@ -196,7 +196,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script><!-- for slider bars, and Iris by Automattic -->
 	<script src="<?php echo OIS_URL ?>admin/addSkin/js/iris.min.js" type="text/javascript"></script><!-- the color-picker -->
 
-	<script src="<?php echo OIS_URL ?>admin/addSkin/js/script3.js" type="text/javascript"></script><!-- Design controls, etc. -->
+	<script src="<?php echo OIS_EXT_URL ?>script3.js" type="text/javascript"></script><!-- Design controls, etc. -->
 
 	<script type="text/javascript" src="<?php echo OIS_URL ?>admin/addSkin/js/add_skin.js"></script> <!-- Validation; changes according to selected service provider; etc. -->
 

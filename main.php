@@ -11,164 +11,160 @@ Author URI: http://www.viperchill.com
 
 define( 'OIS_PATH', plugin_dir_path(__FILE__) );
 define( 'OIS_URL', WP_PLUGIN_URL . "/OptinSkin/" );
-define ( 'OIS_EXT_URL', 'http://localhost:8888/designs/' );
+define( 'OIS_EXT_URL', 'http://graemeboy.com/osExt/designs/' );
 
-add_filter('the_content', 'ois_empty_paragraph_fix', 99999);
+add_filter('the_content', 'ois_empty_paragraph_fix', 101);
 
-function ois_empty_paragraph_fix($content) {   
-   $content = force_balance_tags($content);
-   return preg_replace('#<p>\s*+(<br\s*/*>)?\s*</p>#i', '', $content);
-}
+/*
+	Wordpress sometimes has a bug where it inserts empty paragraph
+	tags into the content.
+
+	ois_empty_paragrpah_fix takes in the content of the post as a parameter,
+	and returns the content without any (<p></p>) empty paragraph tags.
+
+	Preconditions: The preg_replace function must exist, and ois_empty_paragraph_fix must
+	be called at the latest time possible to replace all <p></p> tags.
+	Postconditions: $content is returned without any empty paragraph tags.
+*/
+function ois_empty_paragraph_fix($content)
+{
+	$content = force_balance_tags($content);
+	return preg_replace('#<p>\s*+(<br\s*/*>)?\s*</p>#i', '', $content);
+} // ois_empty_paragraph_fix (String content)
 
 
+// ADD WIDGET
 add_action( 'widgets_init', 'ois_load_widgets' );
+
 // AJAX FUNCTIONS
 add_action( 'wp_ajax_nopriv_ois_ajax', 'ois_submission_ajax' );
 add_action( 'wp_ajax_ois_ajax', 'ois_submission_ajax' );
 
-// ADMIN AND CHECK FOR STATS CLEANUP
-if (is_admin()) {
-	//ois_install_database();
+// CHECK IF ADMIN OR FRONT END
+if (is_admin())  {
 	require OIS_PATH . 'admin/admin_main.php';
-	$last_cleanup = get_option('ois_last_cleanup');
-	if (strtotime($last_cleanup) < strtotime('-30 days')) {
-		ois_clean_stats(); // clean those stats!
-	}
-} else {
+} // if
+else {
 	// Include the main front-end file.
 	include_once OIS_PATH . 'front/front_main.php';
-}
+} // else
 
-function ois_submission_ajax() {
+/*
+	Pre: $_POST['skin_id'] must exist, and this is an ID that is contained
+		in the list of all skins, found in the option, 'ois_skins'. $_POST['post_id'] should
+		also be given.
+	Post: A row is added to the optinskin database table, which contains
+	the skin's ID, the post ID, and a 1 to show that it is a submission, not impression.
+
+*/
+function ois_submission_ajax()
+{
 	try {
-		// Find out what kind of post it is.
-		if (!empty($_POST['submit']) && $_POST['submit'] == 'yes') {
-			$submission = 'yes';
-		} else {
-			$submission = 'no';
-		}
 		// Find out whether we should save stats about this event.
 		$stats_disable = get_option('stats_disable');
 		$stats_user_disable = get_option('stats_user_disable');
-		if ($stats_user_disable == 'yes') {
-			// admin user stats are disabled. If this is an admin, we're going
-			// to set $stats_disabled to 'yes,' because it is equivalent to disabling stats.
-			if (is_user_logged_in()) {
-				$stats_disable = 'yes';
-			}
-		}
 
-		if ($stats_disable != 'yes') { // then we should save stats.
+		if ($stats_disable != 'yes' && (!is_user_logged_in() || $stats_disable != 'yes'))
+		{
+			// then we should save stats.
+
 			// Get the Skin ID.
 			if (!empty($_POST['skin_id'])) { // get the skin ID.
 				$skin_id = $_POST['skin_id'];
-			} else {
+			} // if
+			else {
 				$skin_id = '';
-			}
-			// Find out which skin it is.
+			} // else
+
+			// Get the skin's settings.
 			$all_skins = get_option('ois_skins');
-			if (!empty($all_skins)) {
-				foreach ($all_skins as $skin) {
-					if ($skin['id'] == $skin_id) {
-						$this_skin = $skin;
-					}
-				}
-			}
+			$this_skin = $all_skins[$skin_id];
+
 			// Find out if a redirect URL is set, and if so, what it is.
-			if (isset($this_skin['redirect_url']) && trim($this_skin['redirect_url']) != '') {
+			if (isset($this_skin['redirect_url']) && trim($this_skin['redirect_url']) != '')
+			{
 				$redirect_url = $this_skin['redirect_url'];
-			} else {
+			} // if
+			else {
 				$redirect_url = '';
-			}
+			} // else
+
 			// Since we are saving stats, set relevant data.
-			/*
-			This is the old way.
-$new_datum = array (
-				's' => $skin_id, // which skin was this?
-				't' => @date('Y-m-d'), // what time is it?
-				'p' => $_POST['post_id'], // What post is the user current viewing?
-			);
-			if ($submission == 'yes') {
-				$new_datum['m'] = 'yes'; // save as a submission, not just impression.
-			}
-
-			// Actually save the new stats.
-$ois_stats = get_option('ois_stats');
-			if (!empty($ois_stats)) {
-				@array_push($ois_stats, $new_datum);
-			} else {
-				$ois_stats = array($new_datum);
-			}
-			update_option('ois_stats', $ois_stats);
-*/
-
 			$table_created = get_option('ois_table_created');
-			if ($table_created == 'yes') {
+			if ($table_created == 'yes')
+			{
 				global $wpdb;
-   				$table_name = $wpdb->prefix . 'optinskin';
-				if ($submission == 'yes') {
-					$submission = 1;
-				}
-   				$row = $wpdb->insert( $table_name, array( 'skin' => $skin_id, 'post' => $_POST['post_id'], 'submission' => $submission ) );
-			}
+				$table_name = $wpdb->prefix . 'optinskin';
+				$row = $wpdb->insert(
+					$table_name, array(
+						'skin' => $skin_id,
+						'post' => $_POST['post_id'],
+						'submission' => 1
+					)
+				);
+			} // if
 			echo $redirect_url;
 		} // Finished with saving stats.
 		die(0);
-	} catch (Exception $ex) {
+	} // try
+	catch (Exception $ex) {
 		die(0);
-	}
-}
+	} // catch
+} // ois_submission_ajax
 
 // SHORTCODE
 add_shortcode('ois', 'ois_shortcode_skin');
 
+/*
+	Provides a shortcode for the user, in the form of: [ois skin="1" split="2,3,4"]
+	Pre: The attributes skin and split must contain IDs of existing skins.
+	Post: The skin specified by the skin attribute is output, if nothing is passed to split,
+	otherwise, a random skin from the union of skin and split values is output.
+*/
 function ois_shortcode_skin($attr) {
 	$to_return = '';
-	$skin_name = $attr['skin'];
-	if (isset($attr['split'])) {
-		$split_names = $attr['split'];
-		$split_names = explode(',', $split_names);
-		array_push($split_names, $skin_name);
-		// Now we have an array of all of the options.
-		$skin_name = trim($split_names[array_rand($split_names)]);
-	}
-	$skins = get_option('ois_skins');
-	if (!empty($skins)) {
-		foreach ($skins as $a_skin) {
-			if ($a_skin['title'] == $skin_name) {
-				$skin = $a_skin;
-			}
-		}
-		if ($skin['status'] == 'publish') {
-			$skin_design = $skin['design'];
-			$designs = get_option('ois_designs');
-			if (isset($designs[$skin_design])) {
-				$design = $designs[$skin_design];
-			}
-			
-			$to_return .= ois_make_skin($skin, $design);
-		} else {
-			$to_return = '';
-		}
-	}
+	$skin_id = $attr['skin'];
+
+	// Check for split testing
+	if (isset($attr['split']))
+	{
+		$split_ids = $attr['split'];
+		$split_ids = explode(',', $split_ids);
+		array_push($split_ids, $skin_id);
+		// Choose a random skin from this list.
+		$skin_id = trim($split_ids[array_rand($split_ids)]);
+	} // if
+
+	$to_return .= ois_make_skin($skin_id);
 	return $to_return;
-}
+} // ois_shortcode_skin
 
 // ACTIVATION HOOK AND ACTIVATION FUNCTION
 register_activation_hook( __FILE__, 'ois_activation' );
+/*
+	Installs the database. Only to be called on registration.
+*/
 function ois_activation() {
 	ois_install_database();
 	update_option('ois_table_created', 'yes');
 }
 
+/*
+	Pre: Plugin must have permission to create a table.
+	Post: A database table is installed, which contains the columns:
+		skin (integers of skin IDs),
+		ts (auto timestamp),
+		post (integers of post IDs),
+		submission (1 or 0).
+*/
 function ois_install_database() {
 	global $wpdb;
-	
+
 	$table_name = $wpdb->prefix . 'optinskin';
-	
-	// create the table. 
+
+	// create the table.
 	// this table is specifically for storing impressions and submissions data.
-	
+
 	$sql = "CREATE TABLE $table_name (
 		skin int(4),
 		ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -179,134 +175,11 @@ function ois_install_database() {
 	dbDelta( $sql );
 }
 
-// SOCIAL MEDIA BUTTON SCRIPTS
-function ois_fb_script() {
-	$script = "<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = \"//connect.facebook.net/en_GB/all.js#xfbml=1&appId=129200997206154\";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>";
-	$script .= '<div id="fb-root"></div>';
-	echo $script;
-}
-function ois_gplus_script() {
-	$script = "<script type=\"text/javascript\">
-			  (function() {
-			    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-			    po.src = 'https://apis.google.com/js/plusone.js';
-			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-			  })();
-			</script>";
-	echo $script;
-}
-function ois_twitter_script() {
-	$script = '<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>';
-	echo $script;
-}
-
-function ois_linkedin_script() {
-	$script = '<script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>';
-	echo $script;
-}
-function ois_stumbleupon_script() {
-	$script = "<script type=\"text/javascript\">
-			(function() {
-		     var li = document.createElement('script'); li.type = 'text/javascript'; li.async = true;
-		      li.src = 'https://platform.stumbleupon.com/1/widgets.js';
-		      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(li, s);
-	 		})();
-		</script>";
-	echo $script;
-}
-function ois_pinterest_script() {
-	$script = '<script type="text/javascript" src="//assets.pinterest.com/js/pinit.js"></script>';
-	echo $script;
-}
-
-// SOCIAL MEDIA BUTTONS, FB LIKE, GPLUS, RETWEET, etc.
-class ois_social {
-	function ois_fbLike() { // Facebook Like
-		$content = '<iframe src="//www.facebook.com/plugins/like.php?href=%cur_url%&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=155303851207793" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>';
-		return $content;
-	}
-	function ois_pinterest_box() {
-		$content = '<a href="http://pinterest.com/pin/create/button/" class="pin-it-button" count-layout="vertical"><img border="0" src="//assets.pinterest.com/images/PinExt.png" title="Pin It" /></a>';
-		return $content;
-	}
-	function ois_fb_box() {
-		$content = '<div class="fb-like" style="width:50px !important;" data-send="false" sty data-layout="box_count" data-show-faces="false"></div>';
-		return $content;
-	}
-
-	function ois_gplus_box() {
-		$content = '<g:plusone size="tall"></g:plusone>';
-		return $content;
-	}
-
-	function ois_twitter_box() {
-		$content = '<a href="https://twitter.com/share" class="twitter-share-button" data-count="vertical">Tweet</a>';
-		return $content;
-
-	}
-
-	function ois_gplus() { // Google Buzz
-		$content = '<g:plusone size="medium"></g:plusone>';
-		return $content;
-	}
-
-	function ois_linkedin() {
-		$content = '<script type="IN/Share" data-counter="right"></script>';
-		return $content;
-	}
-	function ois_retweet() { // Retweet Tweetmeme
-		$content = '<a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>';
-		return $content;
-	}
-
-	function ois_reddit() { // Reddit
-		$content = '<script type="text/javascript" src="http://www.reddit.com/static/button/button1.js"></script>';
-		return $content;
-	}
-
-	function ois_stumbleupon() { // Stumbleupon
-		$content = '<su:badge layout="2"></su:badge>';
-		return $content;
-	}
-	function ois_stumbleupon_box() {
-		$content = '<su:badge layout="5"></su:badge>';
-		return $content;
-	}
-}
-
-// FUNCTION TO CLEAR STATS
-function ois_clean_stats() {
-	// Every 30 days, we should clean the database
-	$stats = get_option('ois_stats');
-	$cleanup_period = get_option('ois_cleanup_period');
-	if (!$cleanup_period) {
-		$cleanup_period = 31; // default is 31 days
-		update_option('ois_cleanup_period', $cleanup_period);
-	}
-	if (!empty($stats)) {
-		foreach ($stats as $num=>$stat) {
-			if (!empty ($stat['time'])) {
-				if (strtotime($stat['time']) < strtotime('-' . $cleanup_period . ' days')) {
-					echo '<p>' . $stat['time'] . '</p>';
-					unset($stats[$num]);
-				}
-			}
-		}
-	}
-	update_option('ois_stats', $stats);
-	update_option('ois_last_cleanup', date('Y-m-d H:i:s'));
-}
-
 // WIDGETS - LOAD AND WIDGET CLASS
 function ois_load_widgets() {
 	register_widget( 'OptinSkin_Widget' );
-}
+} // ois_load_widgets()
+
 class OptinSkin_Widget extends WP_Widget {
 	function OptinSkin_Widget() {
 		$homeurl = get_option('home');
@@ -321,36 +194,24 @@ class OptinSkin_Widget extends WP_Widget {
 		if ( $title ) {
 			echo $before_title . $title . $after_title;
 		}
+		
+		// Primary skin
 		$skin_id = $instance['skin'];
+		
+		// Split-testing
 		$split_testing = $instance['split-test'];
 		if ($split_testing == 'yes') {
 			$skin_b_id = $instance['skin-b'];
-		}
-		$skins = get_option('ois_skins');
-		foreach ($skins as $s) {
-			if ($s['id'] == $skin_id) {
-				$skin = $s;
-				break;
-			}
-		}
-		if ($split_testing == 'yes') {
-			foreach ($skins as $s) {
-				if ($s['id'] == $skin_b_id) {
-					$skin_b = $s;
-					break;
-				}
-			}
+			
+			// Alternate randomly.
+			if (rand(0,1))
+			{
+				$skin_id = $skin_b_id;
+			} // if
+		}// if
+		
+		echo ois_make_skin($skin_id);
 
-			$skin_ar = array ($skin, $skin_b);
-			$rand_key = array_rand($skin_ar, 1);
-			$skin = $skin_ar[$rand_key];
-		}
-
-		if (!empty($skin)) {
-			$design = $skin['design'];
-			$all_designs = get_option('ois_designs');
-			echo ois_make_skin($skin, $all_designs[$design]);
-		}
 		echo '<div style="clear:both;"></div>';
 		echo $after_widget;
 	}
@@ -375,15 +236,13 @@ class OptinSkin_Widget extends WP_Widget {
 			<select class="ois_widget_selection" name="<?php echo $this->get_field_name( 'skin' ); ?>">
 				<?php
 		$skins = get_option('ois_skins');
-		foreach ($skins as $skin) {
-			if ($skin['status'] == 'publish') {
-				echo '<option value="' . $skin['id'] . '"';
-				if ($instance['skin'] == $skin['id']) {
-					echo ' selected="selected" ';
-				}
-				echo '>' . $skin['title'] . '</option>';
-			}
-		}
+		foreach ($skins as $id=>$skin) {
+			echo '<option value="' . $id . '"';
+			if ($instance['skin'] == $id) {
+				echo ' selected="selected" ';
+			} // if
+			echo '>' . $skin['title'] . '</option>';
+		} // foreach
 ?>
 			</select>
 		</p>
@@ -400,14 +259,12 @@ class OptinSkin_Widget extends WP_Widget {
 		<div class="ois_admin_widget_title">Alternate Skin:</div>
 		<select class="ois_widget_selection" name="<?php echo $this->get_field_name( 'skin-b' ); ?>" >
 		<?php
-		foreach ($skins as $skin) {
-			if ($skin['status'] == 'publish') {
-				echo '<option value="' . $skin['id'] . '"';
-				if ($instance['skin-b'] == $skin['id']) {
-					echo ' selected="selected" ';
-				}
-				echo '>' . $skin['title'] . '</option>';
-			}
+		foreach ($skins as $id=>$skin) {
+			echo '<option value="' . $id . '"';
+			if ($instance['skin-b'] == $id) {
+				echo ' selected="selected" ';
+			} // if
+			echo '>' . $skin['title'] . '</option>';
 		}
 ?>
 		</select>
@@ -432,26 +289,26 @@ class OptinSkin_Widget extends WP_Widget {
 			}
 		</style>
 	<?php
-	}
-}
+	} // form (instance)
+} // OptinSkin_Widget()
 
-// Provides cross-browser css code for gradients, based on top and bottom colors - Graeme Boy (graemeboy@gmail.com)
-function ois_vertical_gradient($top, $bottom) {
-	// Changing hex. For internet explorer.
-	if ($top == '#fff') {
-		$top = '#ffffff';
-	}
-	if ($bottom == '#fff') {
-		$bottom = '#ffffff';
-	}
-	// Creating gradient.
-	if ($top == $bottom) {
-		$content = 'background-color:' . $top . '!important;';
-	} else {
-		$content = 'background: ' . $top . ' !important;background: -moz-linear-gradient(top, ' . $top . ' 0%, ' . $bottom . ' 100%) !important;background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,' . $top . '), color-stop(100%,' . $bottom . ')) !important;background: -webkit-linear-gradient(top, ' . $top . ' 0%,' . $bottom . ' 100%) !important;background: -o-linear-gradient(top, ' . $top . ' 0%,' . $bottom . ' 100%) !important;background: -ms-linear-gradient(top, ' . $top . ' 0%,' . $bottom . ' 100%) !important;background: linear-gradient(top, ' . $top . ' 0%,' . $bottom . ' 100%) !important;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'' . $top . '\', endColorstr=\'' . $bottom . '\',GradientType=0 ) !important;';
-	}
-
-	return $content;
-
-}
+/*
+	Pre: $skin_id must be an existing skin and the path to "...skins/$skin_id" must exist.
+	Post: returns the html template for this skin.
+*/
+function ois_make_skin($skin_id)
+{
+	// The two CSS files required, and the one JS file required, are already enqueued.
+	$skin_path = OIS_PATH . "skins/$skin_id";
+	$skin_path = OIS_PATH . "/Skins/$skin_id";
+	$html_file = "$skin_path/static.html";
+	if (file_exists($html_file))
+	{
+		return file_get_contents($html_file);
+	} // if
+	else
+	{
+		return "<!-- OptinSkin file was not found in the directory. -->";
+	} // else
+} // ois_make_skin
 ?>

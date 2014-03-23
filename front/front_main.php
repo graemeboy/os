@@ -2,22 +2,6 @@
 
 add_action('init', 'ois_front_setup');
 
-function ois_make_skin($skin_id) 
-{
-	// The two CSS files required, and the one JS file required, are already enqueued.
-	$skin_path = OIS_PATH . "skins/$skin_id";
-	$skin_path = OIS_PATH . "/Skins/$skin_id";
-	$html_file = "$skin_path/static.html";
-	if (file_exists($html_file))
-	{
-		return file_get_contents($html_file);
-	}
-	else
-	{
-		return "<!-- OptinSkin file was not found in the directory. -->";
-	}
-} // ois_make_skin
-
 function ois_front_setup() 
 {
 	// Load the necessary scripts.
