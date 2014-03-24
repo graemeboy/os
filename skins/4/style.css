@@ -1,0 +1,84 @@
+/*
+	Stylesheet for OptinSkin; ID: 4.
+	Generated: March 23, 2014, 11:06 pm
+*/
+/* From original stylesheet */
+.ois-6-header 
+{
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.ois-6-email-input 
+{
+	height: 32px;
+	margin-right: 10px;
+}
+
+.ois-6-inner
+{
+	border-style: solid;
+}
+/* End original stylesheet */
+/* Google Font stylesheets */
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Droid Sans'), local('DroidSans'), url(http://themes.googleusercontent.com/static/fonts/droidsans/v4/s-BiyweUPV0v-yRb-cjciC3USBnSvpkopQaUR-2r7iU.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), url(http://themes.googleusercontent.com/static/fonts/lobster/v8/TSDaXhyJuDJ-NBU0popSWA.ttf) format('truetype');
+}
+/* End Google Fonts */
+/* Generated from custom design options */
+.ois-6-outer {
+	width: 402px !important;
+}
+.ois-6-inner {
+	background-color: #ffffff !important;
+	border-color: #e3e3e3 !important;
+	border-radius: 20px !important;
+	padding-top: 20px !important;
+	padding-bottom: 23px !important;
+	padding-left: 50px !important;
+	padding-right: 42px !important;
+	border-width: 1px !important;
+}
+.ois-6-button {
+	width: 248px !important;
+	background-color: #ac0606 !important;
+	border-color: #932929 !important;
+	height: 44px !important;
+	font-size: 20px !important;
+	font-family: 'Droid Sans', Helvetica, sans-serif !important;
+	color: #f4f4f4 !important;
+	border-width: 1px !important;
+}
+.ois-6-title {
+	font-size: 34px !important;
+	text-align: center !important;
+	color: #2c3e50 !important;
+	font-family: 'Lobster', Helvetica, sans-serif !important;
+	font-weight: 700 !important;
+	line-height: 51px !important;
+	margin-bottom: 10px !important;
+}
+.ois-6-form {
+	text-align: center !important;
+}
+.ois-6-email-input {
+	width: 196px !important;
+	padding-top: 4px !important;
+	padding-bottom: 4px !important;
+	padding-right: 1px !important;
+	padding-left: 5px !important;
+	border-radius: 5px !important;
+	margin-bottom: 10px !important;
+	margin-top: 10px !important;
+	text-align: center !important;
+}
+/* End custom style */
+/* End of file */

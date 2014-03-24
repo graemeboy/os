@@ -24,31 +24,6 @@ function ois_edit_skin($skin) {
 			</script>';
 		} // if
 	} // if delete
-	
-	/*
-else if (isset($_GET['draft'])) {
-			if (check_admin_referer('draft')) {
-				// Now we can delete the skin!
-				$all_skins = get_option('ois_skins');
-				$id = $_GET['draft'];
-				if (!empty($all_skins)) {
-					foreach ($all_skins as $num=>$la_skin) {
-						if ($la_skin['id'] == $id) {
-							$all_skins[$num]['status'] = 'draft';
-							break;
-						}
-					}
-					update_option('ois_skins', $all_skins);
-					$cur_location = explode("?", $_SERVER['REQUEST_URI']);
-					$new_location =
-						'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin&update=draft';
-					echo '<script type="text/javascript">
-						window.location = "' . $new_location . $updated_message . '";
-					</script>';
-				}
-			}
-		}
-*/
 	else 
 	{
 		if (isset($_GET['range'])) {
@@ -199,32 +174,31 @@ else if (isset($_GET['draft'])) {
 			</p>
 		</div>
 		</td>
-				</tr>
-				</tbody>
-				</table>
-
-					<style>
-			.ois_column_left {
-				float:left;
-				width:45%;
-				padding-right: 5%;
-			}
-			.ois_column_right {
-				float:right;
-				width:45%;
-				padding-right: 5%;
-			}
-			.ois_skin_action {
-				margin: 0 5px;
-			}
-		</style>
+	</tr>
+</tbody>
+</table>
+<style>
+.ois_column_left {
+	float:left;
+	width:45%;
+	padding-right: 5%;
+}
+.ois_column_right {
+	float:right;
+	width:45%;
+	padding-right: 5%;
+}
+.ois_skin_action {
+	margin: 0 5px;
+}
+</style>
 
 	<?php
 		// STATISTICS //
 		$stats_disable = get_option('stats_disable');
 		if ($stats_disable != 'yes') { ?>
-		<script src="<?php echo OIS_URL ?>admin/special_includes/flot/jquery.flot.js" language="javascript" type="text/javascript"></script>
-		<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/special_includes/flot/excanvas.pack.js"></script><![endif]-->
+		<script src="<?php echo OIS_URL ?>admin/special_includes/ois-4/jquery.ois-4.js" language="javascript" type="text/javascript"></script>
+		<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/special_includes/ois-4/excanvas.pack.js"></script><![endif]-->
 
 
 		<script language="javascript" type="text/javascript">
@@ -634,20 +608,6 @@ else if (isset($_GET['draft'])) {
 			</table>
 			<div class="wrapper" style="width:95%;">
 			<?php
-			/*
-			ois_start_stat_table(array
-				('title' => '10 Ten Referring Websites',
-					'first_sub_style' => 'style="width:150px;"',
-					'subs' => array ('Domain', '1 Day', '7 Days', '30 Days', 'All Time'),
-					'data' => array (
-						'google.com' => array(2, 3, 2, 4),
-					),
-				) );
-
-			</tbody>
-			</table>*/
-
-
 			// Top Posts
 			$post_stats_submits = array();
 			$post_stats_impressions = array();

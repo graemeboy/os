@@ -11,7 +11,7 @@ Author URI: http://www.viperchill.com
 
 define( 'OIS_PATH', plugin_dir_path(__FILE__) );
 define( 'OIS_URL', WP_PLUGIN_URL . "/OptinSkin/" );
-define( 'OIS_EXT_URL', 'http://graemeboy.com/osExt/designs/' );
+define( 'OIS_EXT_URL', 'http://localhost:8888/designs/' );
 
 add_filter('the_content', 'ois_empty_paragraph_fix', 101);
 
