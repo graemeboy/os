@@ -377,7 +377,7 @@ function ois_handle_new_skin()
 				$property_name = substr($name, $prepend_len, strlen($name));
 				$attr_items = explode("-", $property_name);
 				
-				if ($attr_items[0] == 'text' || $attr_items[0] == 'placeholder' || $attr_items[0] == 'textarea' || ($attr_items[0].'-'.$attr_items[1]) == 'button-text' || $attr_items[0] == 'align')
+				if ($attr_items[0] == 'text' || $attr_items[0] == 'placeholder' || $attr_items[0] == 'textarea' || ($attr_items[0].'-'.$attr_items[1]) == 'button-text' || $attr_items[0] == 'align' || $attr_items[0] == 'img')
 				{ 
 					/* 
 						The attr is type of text, i.e. not style, for example.

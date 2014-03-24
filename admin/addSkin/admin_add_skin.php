@@ -179,7 +179,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	     <a href="#" id="next-design" class="ois-change-design-button">Next Design <span class="glyphicon glyphicon-chevron-right"></span></a>
 
 	     <div style="clear:both"></div>
-		<div id="ois-design-area-wrapper" style="width:100%;padding: 10px 0;">
+		<div id="ois-design-area-wrapper">
 			<div id="ois-design-area" class="ois-design"></div> <!- /design-area -->
 				<div style="clear:both;"></div><!-- clear both -->
 		</div><!-- design-area-wrapper -->
