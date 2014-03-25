@@ -34,32 +34,8 @@ function ois_admin_actions() {
 					// Create the option page for this specific existing skin.
 				add_submenu_page( 'addskin', $skin_name, $skin_name, 'manage_options', 'ois-' . $skin_id, 'ois_setup_edit_skin' );
 				}  // if
-				/*
-else if ($skin['status'] == 'draft') 
-				{
-					$num_drafts++;
-				}  // else if
-*/
-/*
-				else if ($skin['status'] == 'trash') 
-				{
-					$num_trash++;
-				} // else if
-*/
 			} // foreach
 		} // if
-		/*
-if ($num_drafts > 0) 
-		{
-			add_submenu_page( 'addskin', 'Drafts (' . $num_drafts . ')', 'Drafts (' . $num_drafts . ')', 'manage_options', 'ois-drafts', 'ois_view_drafts' );
-		} // if
-*/
-/*
-		if ($num_trash > 0) 
-		{
-			add_submenu_page( 'addskin', 'Trash (' . $num_trash . ')', 'Trash (' . $num_trash . ')', 'manage_options', 'ois-trash', 'ois_view_trash' );
-		} // if
-*/
 		
 		// Option to export skins
 		add_submenu_page( 'addskin', 'Export Skins', 'Export Skins', 'manage_options', 'oisexport', 'ois_export_skins' );
@@ -74,7 +50,9 @@ if ($num_drafts > 0)
 		//add_submenu_page( 'optinskin', 'OptinBar', 'OptinBar', 'manage_options', 'ois-optinbar', 'ois_optinbar' );
 
 		add_submenu_page( 'addskin', 'Get More Designs', 'Get More Designs', 'manage_options', 'ois-add-designs', 'ois_add_designs' );
-
+		
+		add_submenu_page( 'addskin', 'License Key', 'License Key', 'manage_options', 'ois-license-key', 'ois_license_key' );
+				
 		add_submenu_page( 'addskin', 'General Settings', 'General Settings', 'manage_options', 'optinskin-settings', 'ois_general_settings' );
 
 		$error_cats = get_option('ois_error_log');

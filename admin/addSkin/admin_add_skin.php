@@ -12,6 +12,29 @@ function ois_has_saved()
 } // ois_has_saved()
 
 function ois_add_new() {
+
+
+	//update_option('ois-valid', 'no');
+
+	$ois_valid = get_option('ois-valid');
+	if ($ois_valid == 'yes')
+	{
+		// Get license key
+		$key = get_option('ois-key');
+		$home_url = get_option('ois-home-url');
+		
+		echo "Key: $key and Home: $home_url";
+	} // if
+	else
+	{
+		// Need to redirect here.
+		$new_location = '';
+		?>
+
+		<?php
+	}
+
+	//$key = '12345';
 	/*
 		CHECK IF SAVED
 		If the user has saved at this point, save data and move to new page.
@@ -108,7 +131,7 @@ function ois_add_new() {
 			// $custom_design_id here in an integer
 			$custom_path = OIS_PATH . "customDesigns/$custom_design_id";
 			$css_url = OIS_URL . "customDesigns/$custom_design_id/style.css";
-			
+
 			if (file_exists($custom_path))
 			{
 				$cust_html = file_get_contents("$custom_path/static.html");
@@ -118,8 +141,8 @@ function ois_add_new() {
 					)
 				);
 			} // if
-		}
-	}
+		} // foreach
+	} // if
 
 	/*
 		Set hidden input to skin ID
@@ -130,7 +153,10 @@ function ois_add_new() {
 		var curDesign = <?php echo $design_choice ?>;
 		var extUrl = "<?php echo OIS_EXT_URL ?>";
 		var customDesigns = <?php echo json_encode($custom_design_content); ?>;
-		console.log(customDesigns);
+		var licenseKey = "<?php echo $key; ?>";
+		var homeUrl = "<?php echo $home_url; ?>";
+
+/* 		console.log(customDesigns); */
 
 		var savedSettings = {};
 		<?php

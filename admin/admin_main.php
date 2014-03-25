@@ -13,6 +13,10 @@ include_once 'skinStats/admin_statistics.php';
 // Export Skins
 include_once 'exportSkin/admin_export_skin.php';
 
+// Validation and License Key
+// Note: removing this line will actually break the plugin.
+include_once 'validation/admin_validation.php';
+
 //include_once 'admin_data.php';
 include_once 'admin_functions.php';
 include_once 'admin_trash.php';
