@@ -64,15 +64,18 @@ function ois_submission_ajax()
 		$stats_disable = get_option('stats_disable');
 		$stats_user_disable = get_option('stats_user_disable');
 
+		// Don't update stats if admin is logged in or if statistics are disabled.
 		if ($stats_disable != 'yes' && (!is_user_logged_in() || $stats_disable != 'yes'))
 		{
 			// then we should save stats.
 
 			// Get the Skin ID.
-			if (!empty($_POST['skin_id'])) { // get the skin ID.
+			if (!empty($_POST['skin_id'])) 
+			{ // get the skin ID.
 				$skin_id = $_POST['skin_id'];
 			} // if
-			else {
+			else 
+			{
 				$skin_id = '';
 			} // else
 

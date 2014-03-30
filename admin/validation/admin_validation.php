@@ -51,7 +51,8 @@ function ois_license_key()
 
 <h4>Please enter your license key below. The plugin requires this to access the designs when you create a new skin.</h4>
 <form method="post" id="ois-validation-form">
-	<input type="hidden" name="homeUrl" value="<?php echo $home_url; ?>"
+	<input type="hidden" name="homeUrl" value="<?php echo $home_url; ?>" />
+	<input type="hidden" name="validate" value="yes" />
 	<div>
 		<input type="text" id="ois-license-in" class="ois_textbox" style="width:230px;" placeholder="Type your license key here" name="licenseKey" value="<?php echo $license_key ?>">
 	</div>
@@ -75,8 +76,8 @@ function ois_license_key()
 			// We will be expecting a new alert, so hide any current.
 			$('.ois-validation-alert').hide();
 			
+			// Send to external server.
 			data = $('#ois-validation-form').serialize();
-			console.log(data);
 			jQuery.post(apiUrl, data, function (data)
 			{
 				// This is going to check to see if we have a working license.
@@ -88,6 +89,7 @@ function ois_license_key()
 						license: license,
 						homeUrl: "<?php echo $home_url ?>",
 					};
+					// Send to Wordpress to update options.
 					// ajaxurl is already defined.
 					$.post(ajaxurl, data, function(response) {
 						if (response == 0)
@@ -107,17 +109,20 @@ function ois_license_key()
 						} // else
 						//alert('Got this from the server: ' + response);
 					});
-					
-					
-				}
+				} // if
 				else
 				{
 					// Error.
 					$('#validation-error').text(data);
 					$('#validation-error').show();
 				} // else
-			}); // done
-
+			}) // done
+			.fail(function ()
+			{
+				// Error.
+					$('#validation-error').text("There was trouble connecting to our validation server. Please try again.");
+					$('#validation-error').show();
+			}); //fail
 		}); // submit
 	}); // document. ready
 </script>

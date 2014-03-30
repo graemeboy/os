@@ -1,6 +1,5 @@
 #ois-design-area {
 	width:auto;
-	float:left;
 }
 #ois-design-area-wrapper
 {
@@ -26,6 +25,33 @@
 	z-index: 100;
 }
 
+#previous-design, #next-design
+{
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 200px;
+	width: 50px;
+	margin: auto 0;
+	opacity: 0.5;
+}
+#previous-design:hover, #next-design:hover
+{
+	opacity: 1;
+}
+#previous-design
+{
+	float: left;
+	background-image:url('http://i.imgur.com/rUxjnCO.png');
+}
+#next-design
+{
+	float: right;
+	background-image:url('http://i.imgur.com/qC0t1uR.png');
+}
+#ois-design-area .ois-outer
+{
+	margin: 0 auto;
+}
 
 .ois-admin-slider .ui-slider-handle, .ois-admin-slider .ui-state-default, .ois-admin-slider .ui-state-hover {
 	/* Overwrite the existing jQuery-ui style */

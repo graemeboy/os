@@ -22,15 +22,16 @@ function ois_add_new() {
 		// Get license key
 		$key = get_option('ois-key');
 		$home_url = get_option('ois-home-url');
-		
-		echo "Key: $key and Home: $home_url";
 	} // if
 	else
 	{
 		// Need to redirect here.
-		$new_location = '';
+		$uri = explode('?', $_SERVER['REQUEST_URI']);
+		$validation_url = $uri[0] . '?page=ois-license-key';
 		?>
-
+		<script type="text/javascript">
+			window.location.href = '<?php echo $validation_url ?>';
+		</script>
 		<?php
 	}
 
@@ -201,11 +202,14 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 			<span id="ois-current-design">0</span>/<span id="ois-num-designs">0</span>
 		</div> <!-- #ois-design-num-display -->
 
-		 <a href="#" id="previous-design" class="ois-change-design-button"><span class="glyphicon glyphicon-chevron-left"></span> Previous Design </a>
-	     <a href="#" id="next-design" class="ois-change-design-button">Next Design <span class="glyphicon glyphicon-chevron-right"></span></a>
-
+		 	    
 	     <div style="clear:both"></div>
 		<div id="ois-design-area-wrapper">
+			<a href="#" id="previous-design" class="ois-change-design-button"></a>
+
+ <a href="#" id="next-design" class="ois-change-design-button"></a>
+
+
 			<div id="ois-design-area" class="ois-design"></div> <!- /design-area -->
 				<div style="clear:both;"></div><!-- clear both -->
 		</div><!-- design-area-wrapper -->
@@ -222,7 +226,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script><!-- for slider bars, and Iris by Automattic -->
 	<script src="<?php echo OIS_URL ?>admin/addSkin/js/iris.min.js" type="text/javascript"></script><!-- the color-picker -->
 
-	<script src="<?php echo OIS_EXT_URL ?>script3.js" type="text/javascript"></script><!-- Design controls, etc. -->
+	<script src="<?php echo OIS_EXT_URL ?>min/script3.min.js" type="text/javascript"></script><!-- Design controls, etc. -->
 
 	<script type="text/javascript" src="<?php echo OIS_URL ?>admin/addSkin/js/add_skin.js"></script> <!-- Validation; changes according to selected service provider; etc. -->
 
@@ -884,7 +888,6 @@ ois_super_button(array(
 	<div id="ois_add_loader" style="display:none">
 		<div style="margin-left:100px;margin-top:20px;margin-bottom:20px;">
 		<h2 style="padding-bottom:10px;">Loading design</h2>
-		<img src="<?php echo OIS_URL; ?>admin/images/loader.gif" style="width:40px" />
 		</div>
 	</div>
 	<?php

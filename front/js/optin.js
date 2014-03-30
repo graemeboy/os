@@ -1,31 +1,56 @@
 jQuery(document).ready(function($) {
-	var disable_impressions = ois.disable_impressions_stats;
+	
+	// Fade
+	
+	var oisCount = 0,
+		fadeSec = 500,
+		fadeSelf; // default
+	
+	var oisFadeInterval = setInterval( function() 
+	{
+		$('.ois-fade').each(function ()
+		{
+			oisCount++; // there is a fader
+			fadeSelf = this;
+			if ($(fadeSelf).is(":onScreen"))
+			{
+				
+				// The design ought to appear.
+				// Get the number of seconds before it should do.
+				if ($(fadeSelf).attr('data-ois-fade-sec'))
+				{
+					fadeSec = parseInt($(this).attr('data-ois-fade-sec')) * 1000;
+				} // if
+				
+				// Fade in after the given number of seconds.
+				setTimeout( function ()
+				{
+					$(fadeSelf).find('.ois-outer').fadeIn(1000, function () {
+						$(fadeSelf).removeClass('ois-fade');
+					});
+				} , fadeSec );
+				oisCount--; // remove this fader from our count
+			} // if
+			if (oisCount == 0)
+			{
+				// There are none left.
+				clearInterval(oisFadeInterval);
+			} // if	
+		}); // each fader
+		oisCount = 0; // reset for next check!
+	}, // anon () 
+	3000
+	); // set Interval; every 3 seconds.
+	
+	
 	var disable_submissions = ois.disable_submissions_stats;
-	if (disable_impressions != 'yes' && disable_submissions != 'yes') {
-		var impressed = new Array();
+	if (disable_submissions != 'yes') 
+	{
 		var submitted = new Array();
-		if (disable_impressions != 'yes') {
-			var ois_interval = setInterval(function() {
-				$('.ois_wrapper:onScreen').each(function() {
-					if ($.inArray($(this).attr('data'), impressed) > -1) {} else {
-						impressed.push($(this).attr('data'));
-						var ois_post_id = $('.ois_wrapper').attr('rel');
-						var ois_skin_id = $(this).attr('data');
-						var ois_service = $(this).attr('service');
-						var submission_data = "action=ois_ajax" + "&ois_submission_nonce=" + ois.ois_submission_nonce + "&post_id=" + ois_post_id + "&skin_id=" + ois_skin_id + "&submit=no";
-						$.ajax({
-							type: "POST",
-							url: ois.ajaxurl,
-							data: submission_data,
-							success: function(msg) {}
-						});
-					}
-				});
-			}, 3000);
-		}
-		if (disable_submissions != 'yes') {
-			$('.ois_wrapper form').submit(function(e) {
-				var ois_service = $(this).attr('service');
+
+		$('.ois-design form').submit(function(e) 
+		{
+			var ois_service = $(this).attr('service');
 				if (ois_service != 'feedburner') {
 					e.preventDefault();
 				}
@@ -70,6 +95,8 @@ jQuery(document).ready(function($) {
 		}
 	}
 });
+
+// Add the "onScreen" attribute.
 (function($) {
 	$.expr[":"].onScreen = function(elem) {
 		var $window = $(window);

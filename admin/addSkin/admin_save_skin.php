@@ -502,8 +502,7 @@ function ois_handle_new_skin()
 			FADE IN EFFECT 
 			The number of seconds, if it's fading, after which it would begin to appear on the page.
 		*/
-		if (!isset($posted_items['fade_sec']) 
-			|| !is_int($posted_items['fade_sec']))  // it's just a text input, so it must be an integer
+		if (empty($posted_items['fade_sec']))
 		{ // it must be an integer, otherwise just 0.
 			$skin_data['fade_sec'] = '0';
 		} // if not fade_sec
@@ -577,8 +576,8 @@ function ois_handle_new_skin()
 		$classes = 'ois-design';
 		if (!empty($posted_items['special_fade']) && $posted_items['special_fade'] == 'yes') 
 		{
-			$classes .= 'ois_fader';
-			$data = 'data-ois-fade-sec=' . $posted_items['fade_sec'];
+			$classes .= ' ois-fade';
+			$data = 'data-ois-fade-sec="' . $posted_items['fade_sec'] . '"';
 		}
 		else
 		{

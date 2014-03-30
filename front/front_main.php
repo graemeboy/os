@@ -2,12 +2,12 @@
 
 add_action('init', 'ois_front_setup');
 
-function ois_front_setup() 
+function ois_front_setup()
 {
 	// Load the necessary scripts.
-	add_action('wp_enqueue_scripts', 'ois_load_scripts' );
-	add_action('wp_enqueue_scripts', 'ois_load_styles' );
-	add_filter('the_content', 'ois_content_skin', 99);
+	add_action( 'wp_enqueue_scripts', 'ois_load_scripts' );
+	add_action( 'wp_enqueue_scripts', 'ois_load_styles' );
+	add_filter( 'the_content', 'ois_content_skin', 99 );
 } // ois_front_setup
 
 function ois_get_optins_for_content($all_skins)
@@ -34,11 +34,7 @@ function ois_get_optins_for_content($all_skins)
 				{
 					$position = $skin['post_position'];
 				}
-				else
-				{
-
-				}
-				//$non_post_positions = array('custom');
+				
 				if ($position != 'custom')
 				{
 					if (!empty($optins_for_content[$position]))
@@ -219,20 +215,19 @@ function ois_content_skin($content) {
 // ENQUEUE THE RELEVENT SCRIPTS
 function ois_load_scripts() {
 
-	// main file
-	$script_url = OIS_URL . "/front/js/optin.js";
-	$script_file = OIS_PATH . "/OptinSkin/front/js/optin.js";
+	// The optin.js script
+	$script_url = OIS_URL . "front/js/optin.js";
+	$script_file = OIS_PATH . "front/js/optin.js";
 	if ( file_exists($script_file) )
 	{
 		// Depends on jQuery
 		wp_register_script( 'ois_optin', $script_url, array('jquery') );
 		wp_enqueue_script( 'ois_optin' );
-	}
+	} // if
 
 	// Localize data
 	// Create an array with the basic data for localization.
 	$stats_submissions_disable = get_option('stats_submissions_disable');
-	$stats_impressions_disable = get_option('stats_impressions_disable');
 	if (empty($stats_submissions_disable) || $stats_submissions_disable != 'yes')
 	{
 		$stats_submissions_disable = 'no';

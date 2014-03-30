@@ -195,3 +195,8 @@ td.ois_label_inner,td.ois_field_inner, {
 	padding: 5px;
 	z-index: 200;
 }
+.ois-textarea-input
+{
+	height: 100px;
+	width: 300px;
+}

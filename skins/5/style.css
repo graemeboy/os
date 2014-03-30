@@ -1,6 +1,6 @@
 /*
 	Stylesheet for OptinSkin; ID: 5.
-	Generated: March 24, 2014, 5:10 pm
+	Generated: March 30, 2014, 4:48 am
 */
 /* From original stylesheet */
 .ois-8-inner
@@ -10,72 +10,73 @@
 /* End original stylesheet */
 /* Generated from custom design options */
 .ois-8-outer {
-	width: 400px !important;
+	width: 523px !important;
 }
 .ois-8-inner {
 	background-color: #fffdda !important;
-	border-radius: 4px !important;
-	padding-top: 10px !important;
-	padding-bottom: 10px !important;
-	padding-left: 10px !important;
-	padding-right: 10px !important;
 	border-color: #efefef !important;
 	border-width: 1px !important;
+	border-radius: 4px !important;
+	padding-bottom: 10px !important;
+	padding-top: 10px !important;
+	padding-left: 10px !important;
+	padding-right: 10px !important;
 }
-.ois-8-title {
-	margin-top: 15px !important;
-	color: #2c3e50 !important;
-	text-align: center !important;
-	font-size: 26px !important;
+.ois-8-button {
+	background-color: #18bc9c !important;
+	border-color: #18bc9c !important;
+	border-width: 1px !important;
+	font-size: 15px !important;
 	font-family: 'Helvetica', Helvetica, sans-serif !important;
-	font-weight: 700 !important;
-	line-height: 21px !important;
+	height: 32px !important;
+	color: #ffffff !important;
+	width: 150px !important;
+}
+.ois-8-call-top {
+	text-align: center !important;
+	color: #000000 !important;
+	font-family: 'Helvetica', Helvetica, sans-serif !important;
+	font-size: 30px !important;
+	margin-bottom: 25px !important;
+}
+.ois-8-email-input {
+	padding-bottom: 4px !important;
+	padding-left: 5px !important;
+	padding-right: 2px !important;
+	padding-top: 4px !important;
+	text-align: left !important;
+	width: 150px !important;
+	border-radius: 5px !important;
+	margin-top: 10px !important;
 	margin-bottom: 10px !important;
 }
-.ois-8-subtitle {
-	line-height: 19px !important;
+.ois-8-form {
 	text-align: center !important;
-	color: #2c3e50 !important;
-	font-size: 14px !important;
-	font-family: 'Helvetica', Helvetica, sans-serif !important;
-	font-weight: 400 !important;
+}
+.ois-8-img-wrapper {
+	text-align: center !important;
 }
 .ois-8-img {
 	margin-top: -25px !important;
 	width: 70px !important;
 }
-.ois-8-img-wrapper {
-	text-align: center !important;
-}
-.ois-8-call-top {
-	font-size: 30px !important;
-	margin-bottom: 25px !important;
-	color: #000000 !important;
-	text-align: center !important;
-}
-.ois-8-button {
-	width: 150px !important;
-	height: 32px !important;
-	font-size: 15px !important;
-	font-family: 'Helvetica', Helvetica, sans-serif !important;
-	background-color: #18bc9c !important;
-	color: #ffffff !important;
-	border-color: #18bc9c !important;
-	border-width: 1px !important;
-}
-.ois-8-email-input {
-	width: 150px !important;
-	padding-top: 4px !important;
-	padding-bottom: 4px !important;
-	padding-right: 2px !important;
-	padding-left: 5px !important;
-	border-radius: 5px !important;
+.ois-8-title {
+	margin-top: 15px !important;
 	margin-bottom: 10px !important;
-	margin-top: 10px !important;
-	text-align: left !important;
-}
-.ois-8-form {
 	text-align: center !important;
+	color: #2c3e50 !important;
+	font-size: 26px !important;
+	font-family: 'Helvetica', Helvetica, sans-serif !important;
+	line-height: 21px !important;
+	font-weight: 700 !important;
+}
+.ois-8-subtitle {
+	text-align: center !important;
+	color: #2c3e50 !important;
+	font-size: 14px !important;
+	font-family: 'Helvetica', Helvetica, sans-serif !important;
+	font-weight: 400 !important;
+	line-height: 19px !important;
 }
 /* End custom style */
 /* End of file */
