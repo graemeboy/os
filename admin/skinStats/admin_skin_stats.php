@@ -1,5 +1,4 @@
 <?php
-
 function ois_edit_skin($skin) {
 	if (isset($_GET['delete'])) {
 		if (check_admin_referer('trash')) 
@@ -49,35 +48,24 @@ function ois_edit_skin($skin) {
 		ois_section_title('Skin Performance', 
 			stripslashes($skin['title']), stripslashes($skin['description']));
 
-		$feedburner_id = get_option('ois_feedburner_id');
-		$mailchimp_id = get_option('ois_mailchimp_id');
-		$mailchimp_api = get_option('ois_mailchimp_api');
-		$aweber_id = get_option('ois_aweber_id');
-		$optin_accounts = array (
-			'FeedburnerID' => $feedburner_id,
-			'MailChimpID' => $mailchimp_id,
-			'MailChimpAPI' => $mailchimp_api,
-			'AweberID' => $aweber_id,
-		);
-
-		//$all_stats = get_option('ois_stats');
+		$all_stats = array();
 		$skin_id = $skin['id'];
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'optinskin';
 		$sql = "SELECT * FROM $table_name WHERE skin='$skin_id' ORDER BY ts DESC";
 		$rows = $wpdb->get_results($sql);
-		$all_stats = array();
 		foreach ($rows as $row) {
 			$submission = $row->submission;
 			$timestamp = $row->ts;
 			$post = $row->post;
-			if ($submission == 1) {
+			if ($submission == 1) 
+			{
 				$submission = 'yes';
 				// just the convention used here; as per Wordpress accepted style.
 			} else {
 				$submission = 'no';
 			}
-			$new_stat = array(
+			$new_stat = array (
 				's' => $skin_id,
 				'm' => $submission,
 				't' => $timestamp,
@@ -85,11 +73,14 @@ function ois_edit_skin($skin) {
 			);
 			array_push($all_stats, $new_stat);
 		}
+		
 		$impressions = array();
 		$submits = array();
 
-		if (!empty($all_stats)) {
-			foreach ($all_stats as $stats) {
+		if (!empty($all_stats)) 
+		{
+			foreach ($all_stats as $stats) 
+			{
 				if (!empty($stats['m']) && $stats['m'] == 'yes') 
 				{
 					array_push($submits, $stats);
@@ -100,6 +91,9 @@ function ois_edit_skin($skin) {
 				} // else
 			} // foreach
 		} // id
+		
+		
+		
 		$uri = explode('?', $_SERVER['REQUEST_URI']);
 		$edit_url = $uri[0] . '?page=addskin&id=' . $skin['id'];
 		$dup_url = $uri[0] . '?page=addskin&duplicate=' . $skin['id'];
@@ -117,7 +111,6 @@ function ois_edit_skin($skin) {
 			?>&delete=<?php echo $skin['id']; ?>"><span class="glyphicon glyphicon-trash"></span> Delete Skin</a>
 		</h2>
 	</div>
-	<?php //echo "impressions";print_r($impressions); ?>
 
 		<style>
 			.ois_stats_option, .ois_stats_days_option {
@@ -136,7 +129,6 @@ function ois_edit_skin($skin) {
 				-moz-box-shadow:    1px 1px 1px 1px #eee;
 	 			-webkit-box-shadow: 1px 1px 1px 1px #eee;
 	  			box-shadow:         1px 1px 1px 1px #eee;
-
 			}
 			div.ois_stat_options{
 				padding: 15px 0 15px 5px;
@@ -156,6 +148,10 @@ function ois_edit_skin($skin) {
 			}
 			.ois_stats_table {
 				margin-top: 10px !important;
+			}
+			.ois_vis_a:hover
+			{
+				text-decoration: none;
 			}
 		</style>
 		<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
@@ -197,10 +193,7 @@ function ois_edit_skin($skin) {
 		// STATISTICS //
 		$stats_disable = get_option('stats_disable');
 		if ($stats_disable != 'yes') { ?>
-		<script src="<?php echo OIS_URL ?>admin/special_includes/ois-4/jquery.ois-4.js" language="javascript" type="text/javascript"></script>
-		<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo WP_PLUGIN_URL; ?>/OptinSkin/admin/special_includes/ois-4/excanvas.pack.js"></script><![endif]-->
-
-
+		<script src="<?php echo OIS_URL ?>admin/skinStats/js/jquery.flot.min.js" language="javascript" type="text/javascript"></script>
 		<script language="javascript" type="text/javascript">
 
 		jQuery(function ($) {
@@ -465,7 +458,7 @@ function ois_edit_skin($skin) {
 			var ois_conversions_plot = $("#ois_conversions_plot");
 			$.plot( ois_conversions_plot , conversions_data, conversions_options );
 
-				 function ois_stat_showTooltip(x, y, contents) {
+			function ois_stat_showTooltip(x, y, contents) {
 		        $('<div id="tooltip">' + contents + '</div>').css( {
 		            position: 'absolute',
 		            display: 'none',
@@ -589,16 +582,18 @@ function ois_edit_skin($skin) {
 			$useable_uri = explode('&range=', $_SERVER['REQUEST_URI']);
 			$days = array(20, 30, 60, 90);
 			$days = array_reverse($days);
-			foreach ($days as $day) {
-				echo '<span 	class="ois_stats_days_option ';
-				if ($stats_range == $day) {
+			foreach ($days as $day) 
+			{
+				echo '<span class="ois_stats_days_option ';
+				if ($stats_range == $day) 
+				{
 					echo 'ois_stats_days_a_active';
-				}
+				} // if
 				echo '" style="float:right;margin-top:-7px;">
 							<a 	href="' . $useable_uri[0] . '&range=' . $day . '"
 								id="ois_a_lol" class="ois_stats_days_a ">' . $day . ' Days</a>
 							</span>';
-			}
+			} // foreach
 ?>
 
 				</div>
@@ -613,22 +608,28 @@ function ois_edit_skin($skin) {
 			$post_stats_impressions = array();
 			$all_posts = get_posts();
 			if (!empty($all_posts)) {
-				foreach ($all_posts as $post) {
+				foreach ($all_posts as $post) 
+				{
 					$post_id = $post->ID;
 					$post_stats_submits[$post_id] = 0;
 					$post_stats_impressions[$post_id] = 0;
-					foreach ($submits as $submit) {
-						if ($submit['p'] == $post_id) {
+					foreach ($submits as $submit) 
+					{
+						if ($submit['p'] == $post_id) 
+						{
 							$post_stats_submits[$post_id]++;
-						}
-					}
-					foreach ($impressions as $impression) {
-						if ($impression['p'] == $post_id) {
+						} // if
+					} // foreach
+					foreach ($impressions as $impression) 
+					{
+						if ($impression['p'] == $post_id) 
+						{
 							$post_stats_impressions[$post_id]++;
-						}
-					}
-				}
-			}
+						} // if
+					} // foreach
+				} // foreach
+			} // if
+			
 
 			asort($post_stats_impressions);
 			$post_stats_impressions =  array_reverse($post_stats_impressions, true);
@@ -701,11 +702,6 @@ function ois_edit_skin($skin) {
 			ois_section_end();
 ?>
 			<div style="clear:both"></div>
-			<div style="width:95%;">
-			<p	style="padding: 8px; text-align:center; margin: 45px 0 0 0; background-color: #FCFCFC;">
-				<em>Note:</em> statistics are only kept in the database for <?php echo $num_data; ?> days, so as not to slow down the system. You can change this option in the OptinSkin General Settings page.
-			</p>
-			</div>
 			<?php
 		}
 

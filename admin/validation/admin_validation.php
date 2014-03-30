@@ -1,50 +1,40 @@
 <?php
-
-add_action( 'wp_ajax_ois_update_license', 'ois_update_license' );
+//===================================================
+//! admin_validation.php
+// Allows the user to update his or her license key.
+//===================================================
 
 /*
-	Please do not edit this page, unless you really know what you're doing.
-	For example, if you try to override wthe license-key information that is used,
-	the plugin will probably break.
-	The license key is required to be sent to our server,
-	in order to receive the latest designs and functions.
+    Note: Please do not edit this page, unless you really know what you're doing.
+    If you try to override the license-key that is used, the plugin will probably break.
+    The license key is required to be sent to our server, to receive latest designs.
 */
+
+// AJAX FOR LICENSE KEY VALIDATION
+add_action( 'wp_ajax_ois_update_license', 'ois_update_license' );
+
+/**
+ * ois_license_key function.
+ * Allows the user to update and validate his or her license key.
+ *
+ * @access public
+ * @return void
+ */
 function ois_license_key()
 {
+	// Add this section's title.
 	ois_section_title('License Key', 'Here you can update your license key settings', '');
 	
+	// Get the current license key.
 	$license_key = get_option('ois-key');
+	// Try to determine the home URL; necessary for single-site licenses.
 	$home_url = home_url();
 	if ($home_url == '')
 	{
 		$home_url = 'Undefined';
-	}
-	
+	} // if
 ?>
-
-<style type="text/css">
-.ois-validation-alert
-{
-	display: none;
-	border-style: solid;
-	border-width: 1px;
-	padding: 15px;
-	margin-bottom: 20px;
-	border-radius: 4px;
-}
-#validation-error
-{
-	background-color: #f2dede;
-	border-color: #ebccd1;
-	color: #a94442;
-}
-#validation-success
-{
-	background-color: #dff0d8;
-	border-color: #d6e9c6;
-	color: #3c763d;
-}
-</style>
+<link href="<?php echo OIS_URL ?>admin/validation/css/style.css" rel="stylesheet">
 
 <div id="validation-error" class="ois-validation-alert">Error</div>
 <div id="validation-success" class="ois-validation-alert">Success</div>
@@ -65,7 +55,6 @@ function ois_license_key()
 	{
 		var data;
 		var apiUrl = "<?php echo OIS_EXT_URL ?>check_license.php";
-		var homeUrl = "<?php echo get_home_url(); ?>"
 		var license = "";
 		
 		$('#ois-validation-form').submit(function (e)
@@ -130,7 +119,13 @@ function ois_license_key()
 	//}
 }
 
-// Update the license once successfully posted via ajax.
+/**
+ * ois_update_license function.
+ * Update the license once successfully posted via ajax.
+ * 
+ * @access public
+ * @return void
+ */
 function ois_update_license ()
 {
 	if (isset($_POST['license']))

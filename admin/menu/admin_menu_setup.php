@@ -1,6 +1,14 @@
 <?php
 add_action( 'admin_menu', 'ois_admin_actions' );
 
+
+/**
+ * ois_admin_actions function.
+ * Set up the admin menu for OptinSkin. 
+ *
+ * @access public
+ * @return void
+ */
 function ois_admin_actions() {
 	// Create Option for General Settings
 	//update_option('ois_validation', 'no');
@@ -12,7 +20,6 @@ function ois_admin_actions() {
 	else
 	{
 		// Create menu
-		//add_menu_page( 'OptinSkin', 'OptinSkin', 'manage_options', 'optinskin', 'ois_dash', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
 		add_menu_page( 'OptinSkin', 'OptinSkin', 'manage_options', 'addskin', 'ois_add_new', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
 		// Create Option for Creating New OptInSkins
 		// add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -22,8 +29,7 @@ function ois_admin_actions() {
 		$existing_skins = get_option( 'ois_skins' );
 
 		$stats_disable = get_option('stats_disable');
-/* 		$num_drafts = 0; */
-		$num_trash = 0;
+
 		if (!empty($existing_skins)) {
 			foreach ( $existing_skins as $skin_id => $skin ) {
 				// Extract data about skin.
@@ -41,16 +47,13 @@ function ois_admin_actions() {
 		add_submenu_page( 'addskin', 'Export Skins', 'Export Skins', 'manage_options', 'oisexport', 'ois_export_skins' );
 
 		add_submenu_page( 'addskin', 'Create a Design', 'Create a Design', 'manage_options', 'create-design', 'ois_custom' );
-		add_submenu_page( 'addskin', 'Manage Designs', 'Manage Designs', 'manage_options', 'ois-manage-designs', 'ois_manage_designs' );
 
-		if ($stats_disable != 'yes') {
+		if ($stats_disable != 'yes') 
+		{
 			add_submenu_page( 'addskin', 'Split-Testing', 'Split-Testing', 'manage_options', 'ois-split-testing', 'ois_statistics' );
-		}
-		// Not ready yet :)
-		//add_submenu_page( 'optinskin', 'OptinBar', 'OptinBar', 'manage_options', 'ois-optinbar', 'ois_optinbar' );
-
-		add_submenu_page( 'addskin', 'Get More Designs', 'Get More Designs', 'manage_options', 'ois-add-designs', 'ois_add_designs' );
+		} // if
 		
+		// License Key options, so that the user can change his or her license.
 		add_submenu_page( 'addskin', 'License Key', 'License Key', 'manage_options', 'ois-license-key', 'ois_license_key' );
 				
 		add_submenu_page( 'addskin', 'General Settings', 'General Settings', 'manage_options', 'optinskin-settings', 'ois_general_settings' );

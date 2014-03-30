@@ -1,97 +1,32 @@
 <?php
+//=========================================================================
+//! admin_custom.php
+//  Contains the functions needed for creating and editing custom designs.
+//=========================================================================
 
+/**
+ * ois_custom function.
+ * Sets up the page for adding and editing custom designs.
+ * 
+ * @access public
+ * @return void
+ */
 function ois_custom() {
-
+	
+	// Custom Designs will hold an array of design ids
+	$custom_designs = get_option('ois_custom_designs');
+	
+	// Output a suitable header with title for the page.
 	ois_section_title('Create a Custom Design', 'This tool is for creating custom designs for your skins.', 'Enter  your HTML into the editor below, and preview your design as it instantly updates. Once you save, it will be available for you when you add new skins.');
-	if (!empty($_POST) && check_admin_referer('ois_custom', 'custom_design') ) {
-		// We need to save this to a file.
-
-		// Custom Designs will hold an array of design ids
-		$custom_designs = get_option('ois_custom_designs');
-
-		if (!isset($_POST['design_id']))
-		{
-			// We are creating a new design id
-			$design_id = 1;
-			if (!empty($custom_designs))
-			{
-				while (in_array($design_id, $custom_designs))
-				{
-					$design_id++;
-				} // while
-				array_push($custom_designs, $design_id);
-			} // if
-			else
-			{
-				$custom_designs = array(1);
-			}
-			// We should now have a design id that isn't in use.
-			
-			update_option('ois_custom_designs', $custom_designs);
-				
-		} // if
-		else
-		{
-			$design_id = $_POST['design_id'];
-		} // else
-
-		$custom_path = OIS_PATH . "customDesigns/$design_id";
-
-		if ( !file_exists( $custom_path ) )
-		{
-			mkdir( $custom_path, 0777, true );
-		} // if
-
-		if (isset($_POST['design_html']))
-		{
-			$html_content = $_POST['design_html'];
-			file_put_contents("$custom_path/static.html", stripslashes($html_content));
-		} // if
-
-		if (isset($_POST['design_css']))
-		{
-			$css_content = $_POST['design_css'];
-			file_put_contents("$custom_path/style.css", stripslashes($css_content));
-		} // if
-
-	} // if
-	else if (isset($_GET['id'])) {
-			// Editing a design
-
-			$design_id = trim($_GET['id']);
-			$custom_path = OIS_PATH . "customDesigns/$design_id";
-
-			if (file_exists($custom_path))
-			{
-				$this_html = file_get_contents("$custom_path/static.html");
-				$this_css = file_get_contents("$custom_path/style.css");
-			} // if
-		} // else if
+	
+	// Check if we're updating a design, or adding one.
+	ois_save_custom_design($custom_designs);
+		
+	// Create navigation to existing designs.
+	ois_custom_designs_header($custom_designs);
 ?>
 
-
-	<style>
-	#ois_custom_update_area {
-
-		margin-bottom: 10px;
-		min-height: 150px;
-
-
-	}
-	#ois_custom_editor, #ois_custom_css_editor {
-		width: 100%;
-		height: 210px;
-		padding: 15px;
-		border-radius: 3px;
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		outline: none;
-	}
-	.ois_custom_waiting {
-		text-align: center;
-		margin: auto 0;
-	}
-	</style>
+	<link href="<?php echo OIS_URL ?>admin/customDesign/css/style.css" rel="stylesheet">
 
 	<table class="widefat">
 	<thead>
@@ -230,7 +165,7 @@ function ois_custom() {
 	</form>
 
 
-	<div class="ois_custom_title" style="font-size:15px;text-align:left;padding: 17px;">How to use the HTML/CSS Editor</div>
+	<div id="ois-instructions">How to use the HTML/CSS Editor</div>
 	<table class="widefat">
 		<tr>
 			<td class="ois_custom_info_sec">
@@ -239,7 +174,7 @@ function ois_custom() {
 			</td>
 
 			<td>
-				<img class="ois_custom_screen" src="<?php echo OptinSkin_URL . 'admin/images/custom_start.png'; ?>" />
+				<img class="ois_custom_screen" src="<?php echo OIS_URL . 'admin/customDesign/img/custom_start.png'; ?>" />
 			</td>
 		</tr>
 		<tr>
@@ -248,7 +183,7 @@ function ois_custom() {
 				 <div>All you need to do is write some HTML code (or copy and paste it from your service provider) into the first box on the page. Notice how the preview updates as you do so.</div>
 			</td>
 			<td>
-				<img class="ois_custom_screen" src="<?php echo OptinSkin_URL . 'admin/images/custom_html.png'; ?>" />
+				<img class="ois_custom_screen" src="<?php echo OIS_URL . 'admin/customDesign/img/custom_html.png'; ?>" />
 			</td>
 		</tr>
 		<tr>
@@ -257,7 +192,7 @@ function ois_custom() {
 				<div>You can also write some CSS in the box below, which will help you to style your design the way that you want it.</div>
 			</td>
 			<td>
-				<img class="ois_custom_screen" src="<?php echo OptinSkin_URL . 'admin/images/custom_css.png'; ?>" />
+				<img class="ois_custom_screen" src="<?php echo OIS_URL . 'admin/customDesign/img/custom_css.png'; ?>" />
 			</td>
 		</tr>
 		<tr>
@@ -266,7 +201,7 @@ function ois_custom() {
 				<div>Once you save a design, you can go over to the <em>Add Skin</em> page, and find your custom design by clicking through the slider in the <em>Customize Your Design</em> section. Once you've chosen this design, go ahead and create your skin wherever you want, and your design will appear in your posts.</div>
 			</td>
 			<td>
-				<img class="ois_custom_screen" src="<?php echo OptinSkin_URL . 'admin/images/custom_prefinal.png'; ?>" />
+				<img class="ois_custom_screen" src="<?php echo OIS_URL . 'admin/customDesign/img/custom_prefinal.png'; ?>" />
 			</td>
 		</tr>
 	</table>
@@ -298,6 +233,121 @@ function ois_custom() {
 
 	ois_section_end();
 
-}
+} // ois_custom
+
+
+
+/**
+ * ois_custom_designs_header function.
+ * Outputs the header for the Custom Designs page.
+ *
+ * @access public
+ * @param mixed $custom_designs
+ * @return void
+ */
+function ois_custom_designs_header($custom_designs)
+{
+		?>
+	<div>
+	<h2 class="nav-tab-wrapper">
+	<?php 
+	
+	// Check if custom designs have been created.
+	if (!empty($custom_designs))
+	{
+		
+	} // if
+	
+	if ($status == 'publish')
+	{
+		// If the skin has been published, then the user can check performance.
+		$performance_url = $uri[0] . '?page=ois-' . $skin_id;
+		?>
+		<a href="<?php echo $performance_url; ?>" class="nav-tab"><span class="glyphicon glyphicon-signal"></span> Skin Performance</a>
+		<?php
+	} // if
+		
+		
+	?>
+		<a href="#ois-instructions" class="nav-tab"><span class="glyphicon glyphicon-plus"></span> Instructions</a>
+	</h2>
+</div>	
+<?php
+
+} // ois_save_custom_design()
+
+/**
+ * ois_save_design function.
+ * Saves the design, if one is posted, new or edited.
+ * 
+ * @access public
+ * @param mixed $custom_designs
+ * @return void
+ */
+function ois_save_custom_design($custom_designs)
+{
+	if (!empty($_POST) && check_admin_referer('ois_custom', 'custom_design') ) {
+		// We need to save this to a file.
+
+
+		if (!isset($_POST['design_id']))
+		{
+			// We are creating a new design id
+			$design_id = 1;
+			if (!empty($custom_designs))
+			{
+				while (in_array($design_id, $custom_designs))
+				{
+					$design_id++;
+				} // while
+				array_push($custom_designs, $design_id);
+			} // if
+			else
+			{
+				$custom_designs = array(1);
+			}
+			// We should now have a design id that isn't in use.
+			
+			update_option('ois_custom_designs', $custom_designs);
+				
+		} // if
+		else
+		{
+			$design_id = $_POST['design_id'];
+		} // else
+
+		$custom_path = OIS_PATH . "customDesigns/$design_id";
+
+		if ( !file_exists( $custom_path ) )
+		{
+			mkdir( $custom_path, 0777, true );
+		} // if
+
+		if (isset($_POST['design_html']))
+		{
+			$html_content = $_POST['design_html'];
+			file_put_contents("$custom_path/static.html", stripslashes($html_content));
+		} // if
+
+		if (isset($_POST['design_css']))
+		{
+			$css_content = $_POST['design_css'];
+			file_put_contents("$custom_path/style.css", stripslashes($css_content));
+		} // if
+
+	} // if
+	else if (isset($_GET['id'])) {
+		// Editing a design
+
+		$design_id = trim($_GET['id']);
+		$custom_path = OIS_PATH . "customDesigns/$design_id";
+
+		if (file_exists($custom_path))
+		{
+			$this_html = file_get_contents("$custom_path/static.html");
+			$this_css = file_get_contents("$custom_path/style.css");
+		} // if
+	} // else if
+} // ois_save_design ()
 
 ?>

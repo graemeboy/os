@@ -192,6 +192,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 		'description' => 'Select one of our pre-made (and tested) designs using the controllers.',
 		'style' => 'text-align:center !important; padding: 10px !important;',
 		'alternative' => 'yes',
+		'inner_style' => 'width:100px'
 	);
 	ois_option_label($data);
 	// Load the designs carousel.

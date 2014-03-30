@@ -1,6 +1,12 @@
 <?php
-
-// Based on: http://stackoverflow.com/a/15111679/126320
+/**
+ * ois_recursive_rmdir function.
+ * Based on: http://stackoverflow.com/a/15111679/126320
+ * 
+ * @access public
+ * @param mixed $dir
+ * @return void
+ */
 function ois_recursive_rmdir($dir)
 {
 	$files = new RecursiveIteratorIterator(
@@ -17,20 +23,25 @@ function ois_recursive_rmdir($dir)
 }
 
 
-function ois_section_title($title, $subtitle, $helper = '') {
+/**
+ * ois_section_title function.
+ * 
+ * @access public
+ * @param mixed $title
+ * @param mixed $subtitle
+ * @param string $helper (default: '')
+ * @return void
+ */
+function ois_section_title($title, $subtitle, $helper = '') 
+{
 	?>
-<!-- 	<script type="text/javascript" src="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/js/script.js' ?>"></script> -->
-<!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/includes/ois_bootstrap/css/bootstrap.min.css' ?>" rel="stylesheet" /> -->
-	
 	<link href="<?php echo OIS_URL . 'admin/css/admin_style.css' ?>" rel="stylesheet" />
-<!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/admin/css/style.css' ?>" rel="stylesheet" /> -->
-<!-- 	<link href="<?php echo WP_PLUGIN_URL . '/OptinSkin/skins/css/ois_reset.css' ?>" rel="stylesheet" /> -->
 	<?php
 	$all_designs = get_option('ois_designs');
 	if (!$all_designs) {
 		ois_update_designs_code();
 		$all_designs = get_option('ois_designs');
-	}
+	} // if
 	
 	// ENQUEUE ALL DESIGN STYLES
 	if (!empty($all_designs)) {
@@ -39,21 +50,39 @@ function ois_section_title($title, $subtitle, $helper = '') {
 				&& trim($design['css_url']) != '') {
 				$css_url = $design['css_url'];
 				echo "<link rel='stylesheet' href='" . $css_url . "' type='text/css' media='all' />";
-			}
-		}
-	}
+			} // if
+		} // foreach
+	} // if
 	
 	echo '<div class="wrap" style="position:relative;">
 			<div id="ois_header" style="">
 			<img src="' . OIS_URL . 'front/images/optinskin.png" style="margin:0; height:60px; float:right; padding-top: 15px;" />
 			<h2>' . $title . '</h2><h3>' . $subtitle . '</h3><p>' . $helper . '</p>
 		</div><div style="clear:both;"></div>';
-}
-function ois_section_end() {
-	echo '</div>';
-}
+} // ois_section_title ()
 
-function ois_option_label($data) {
+/**
+ * ois_section_end function.
+ * 
+ * @access public
+ * @return void
+ */
+function ois_section_end() 
+{
+	echo '</div>';
+} // ois_section_end()
+
+/**
+ * ois_option_label function.
+ *
+ * Creates the labels for the add skin page. 
+ *
+ * @access public
+ * @param mixed $data
+ * @return void
+ */
+function ois_option_label($data) 
+{
 	if (!empty($data['id'])) {
 		$el_id = $data['id'];
 	} else {
@@ -99,11 +128,30 @@ function ois_option_label($data) {
 	}
 }
 
-function ois_option_end() {
+
+/**
+ * ois_option_end function.
+ * 
+ * @access public
+ * @return void
+ */
+function ois_option_end() 
+{
 	echo '</td></tr>';
 }
 
-function ois_start_option_table($title, $multiform, $img) {
+
+/**
+ * ois_start_option_table function.
+ * 
+ * @access public
+ * @param mixed $title
+ * @param mixed $multiform
+ * @param mixed $img
+ * @return void
+ */
+function ois_start_option_table($title, $multiform, $img) 
+{
 	if ($multiform) {
 		$multiform = 'enctype="multipart/form-data"';
 	} else {
@@ -113,7 +161,8 @@ function ois_start_option_table($title, $multiform, $img) {
 	ois_start_table ($title, $img);
 }
 
-function ois_start_table($title, $img) {
+function ois_start_table($title, $img) 
+{
 	if (empty($img)) {
 		$img = '';
 	}
@@ -131,11 +180,29 @@ function ois_start_table($title, $img) {
 				</tr>
 			</thead>';
 }
-function ois_table_end() {
+
+
+/**
+ * ois_table_end function.
+ * 
+ * @access public
+ * @return void
+ */
+function ois_table_end() 
+{
 	echo '</table>'; // Yes, really.
 }
 
-function ois_inner_label($data) {
+
+/**
+ * ois_inner_label function.
+ * 
+ * @access public
+ * @param mixed $data
+ * @return void
+ */
+function ois_inner_label($data) 
+{
 	if (!empty($data['style'])) {
 		$style = $data['style'];
 	} else {
@@ -214,6 +281,18 @@ function ois_create_steps($steps) {
 	echo trim($content);
 }
 
+
+/**
+ * ois_notification function.
+ *
+ * Appends a notification to the top of the page. 
+ *
+ * @access public
+ * @param mixed $message
+ * @param mixed $style
+ * @param mixed $link
+ * @return void
+ */
 function ois_notification($message, $style, $link) {
 	$content = '<div class="ois_notification" style="' . $style . '">';
 	$content .= $message;
@@ -231,12 +310,29 @@ function ois_notification($message, $style, $link) {
 	echo $content;
 }
 
+
+/**
+ * ois_end_option_and_table function.
+ * 
+ * @access public
+ * @return void
+ */
 function ois_end_option_and_table() {
 	ois_option_end();
 	ois_table_end();
 }
 
-function ois_super_button($attr) {
+
+/**
+ * ois_super_button function.
+ * Creates a styled button that can be used for saving major options.
+ * 
+ * @access public
+ * @param mixed $attr
+ * @return void
+ */
+function ois_super_button($attr) 
+{
 	if (!empty($attr['id'])) {
 		$id = $attr['id'];
 	} else {
@@ -258,7 +354,17 @@ function ois_super_button($attr) {
 					value="' . $value . '"
 					style="' . $style . '" />';
 }
-function ois_secondary_button($attr) {
+
+
+/**
+ * ois_secondary_button function.
+ * 
+ * @access public
+ * @param mixed $attr
+ * @return void
+ */
+function ois_secondary_button($attr) 
+{
 	if (!empty($attr['id'])) {
 		$id = $attr['id'];
 	} else {
@@ -279,42 +385,5 @@ function ois_secondary_button($attr) {
 					id="' . $id . '"
 					value="' . $value . '"
 					style="' . $style . '" />';
-}
-
-add_shortcode('ois_show_all', 'ois_test_all');
-
-function ois_test_all () {
-	$skin_designs = get_option('ois_designs');
-
-	foreach ($skin_designs as $n=>$design) {
-		$ex_skin = array ('optin-service' => 'feedburner');
-		
-		$default_app = array();
-		foreach ($design['appearance'] as $section=>$items) {
-			foreach ($items as $value) {
-				$default_app[$value['attr']] = $value['default'];
-			}
-		}
-		$ex_skin = array_merge($ex_skin, array('appearance' => $default_app));
-		
-		if (trim($design['css_url']) != '') {
-			$to_return .= "<link rel='stylesheet' id='ois_design_" . $design['id'] . "-css'  href='" . $design['css_url'] . "' type='text/css' media='all' />";
-		} else {
-			$to_return .= '<!-- no css for this skin -->';
-		}
-		if (!empty($ex_skin['google_fonts'])) {
-			foreach($ex_skin['google_fonts'] as $val) {
-				$val_explode = explode(' ', $val);
-				$fam = implode('+', $val_explode);
-				$title = implode('_', $val_explode); 
-				$to_return .= "<link rel='stylesheet' id='google_font_" . $title . "' href='http://fonts.googleapis.com/css?family=" . $fam . "' type='text/css' media='all' />";
-			}
-       }
-       
-		$to_return .= '<div style="margin-bottom:10px;clear:both;">' . $design['id'] . ': <br/>' . ois_make_skin($ex_skin, $design) . '</div>';
-		
-	}
-	return $to_return;
-
-}
+} // ois_secondary_button
 ?>

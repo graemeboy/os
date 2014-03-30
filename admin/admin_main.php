@@ -1,26 +1,16 @@
-<?php
-// MENU	
-include_once 'menu/admin_menu_setup.php';
-
-// Add Skin Page
-include_once 'addSkin/admin_add_skin.php';
-
-// Skin Statistics
-include_once 'skinStats/admin_skin_stats.php';
-// Add Statistics
-include_once 'skinStats/admin_statistics.php';
-
-// Export Skins
-include_once 'exportSkin/admin_export_skin.php';
+<?php	
+include_once 'menu/admin_menu_setup.php'; // admin menu
+include_once 'addSkin/admin_add_skin.php'; // add skin page
+include_once 'skinStats/admin_skin_stats.php'; // shows skin statistics
+include_once 'skinStats/admin_statistics.php'; // shows comparative statistics for skins
+include_once 'exportSkin/admin_export_skin.php'; // allows skins to be exported
 
 // Validation and License Key
 // Note: removing this line will actually break the plugin.
 include_once 'validation/admin_validation.php';
 
-//include_once 'admin_data.php';
-include_once 'admin_functions.php';
-include_once 'admin_trash.php';
-include_once 'admin_custom.php';
-include_once 'admin_settings.php';
+include_once 'admin_functions.php'; // admin functions
+include_once 'customDesign/admin_custom.php'; // add and edit custom designs
+include_once 'admin_settings.php'; // allows user to change settings
 
 ?>
