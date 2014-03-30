@@ -11,11 +11,12 @@ add_action( 'admin_menu', 'ois_admin_actions' );
  */
 function ois_admin_actions() {
 	// Create Option for General Settings
-	//update_option('ois_validation', 'no');
-	$validated = get_option('ois_validation');
-	if (trim($validated) != 'yes')
+	//update_option('ois-valid', 'no');
+	$validated = get_option('ois-valid');
+	if (trim($validated) != 'yes') 
 	{
-		add_menu_page('Validation of Purchase', 'OptinSkin', 'manage_options', 'addskin', 'ois_validation', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
+		// License Key options, so that the user can change his or her license.
+		add_menu_page('License Key', 'OptinSkin', 'manage_options', 'ois-license-key', 'ois_license_key', WP_PLUGIN_URL . '/OptinSkin/admin/images/icon.png' );
 	} // if
 	else
 	{
@@ -38,7 +39,8 @@ function ois_admin_actions() {
 				if ($skin['status'] == 'publish') 
 				{
 					// Create the option page for this specific existing skin.
-				add_submenu_page( 'addskin', $skin_name, $skin_name, 'manage_options', 'ois-' . $skin_id, 'ois_setup_edit_skin' );
+				add_submenu_page( 'addskin', $skin_name, $skin_name, 
+					'manage_options', 'ois-' . $skin_id, 'ois_setup_edit_skin' );
 				}  // if
 			} // foreach
 		} // if
@@ -206,331 +208,16 @@ function ois_design_row ($design) {
 }
 
 function ois_setup_edit_skin() {
-
 	$page_token = explode('-', $_GET['page']);
 	if (count($page_token) > 1) {
 		$skin_id = $page_token[1];
 		$skins = get_option('ois_skins');
-
-		foreach ($skins as $some_skin) {
-			if ($skin_id == $some_skin['id']) {
-				$skin = $some_skin;
-				break;
-			}
-		}
+		$skin = $skins[$skin_id];
 		ois_edit_skin($skin);
-	} else {
+	} 
+	else 
+	{
 		'<p>Sorry, no such skin exists.</p>';
-	}
-}
-
-function ois_validation() {
-	$validated = get_option('ois_validation');
-	ois_section_title('Validation of Purchase', 'Thank you for buying OptinSkin&trade;. Please validate your purchase before using the plugin.', '');
-	if (isset($_POST['userID'])) {
-		update_option('ois_user_id', $_POST['userID']);
-		update_option('ois_validation', 'yes');
-	}
-	/*
-	if (isset($_POST['ois_validation_input'])) {
-		$ch = curl_init('http://www.optinskin.com/optipass.php');
-		$secret = 'lilyjensen55cc3';
-		$user_url = get_site_url();
-		$encoded = urlencode('secret') . '=' . urlencode($secret);
-		$encoded .= '&' . urlencode('domain') . '=' . $user_url;
-		curl_setopt($ch, CURLOPT_POSTFIELDS,  $encoded);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$val = curl_exec($ch);
-		curl_close($ch);
-		$cor_code = $val;
-		if (check_admin_referer('ois_validation', 'validate')) {
-			if ($_POST['ois_validation_input'] == $cor_code) {
-				update_option('ois_validation', 'yes');
-
-				$cur_location = explode("?", $_SERVER['REQUEST_URI']);
-				$new_location =
-					'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin';
-				echo '<h3>Thank you for validating this product. <a href="' . $new_location . $updated_message . '" style="cursor:pointer;text-decoration:none;">Click here to begin creating.</a></h3>';
-				$validated = 'yes';
-			} else {
-?>
-				<div id="ois_validation_error_wrap" style="margin: 5px 0 10px 0;">
-					<div id="ois_validation_info">That appears to be the incorrect key for your instance of OptinSkin. Please contact your supplier if you need assistance.</div>
-				</div>
-				<?php
-			}
-		}
-	}
-*/
-	if ($validated != 'yes') {
-?>
-
-	<style type="text/css">
-	#ois_validation_form {
-		-webkit-border-horizontal-spacing: 0px;
-		-webkit-border-vertical-spacing: 0px;
-		background-attachment: scroll;
-		background-clip: border-box;
-		background-color: transparent;
-		background-image: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(224, 224, 224));
-		background-image: -moz-linear-gradient(top,  rgb(255, 255, 255), rgb(224, 224, 224)) !important;
-		background-origin: padding-box;
-		background-repeat: repeat;
-		border-radius: 2px;
-		-webkit-border-radius:2px;
-		-moz-border-radius:2px;
-		border: 1px solid #CCC;
-		color: #333;
-		display: block;
-		font-family: arial, sans-serif;
-		font-size: 12px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: normal;
-		line-height: normal;
-		margin: 9px 0 0 0;
-		padding: 20px 30px;
-		position: relative;
-		width: 840px;
-		zoom: 1;
-	}
-	#ois_validation_error_wrap {
-		background-attachment: scroll;
-		background-clip: border-box;
-		background-color: #6683B3;
-		background-image: -webkit-linear-gradient(top, #c47270 0px, #b25b59 100%);
- 		background-image: -moz-linear-gradient(top,  #c47270, #b25b59) !important;
-		background-origin: padding-box;
-		background-repeat: repeat;
-		border: none;
-		-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 1px 1px 0px;
-		box-shadow: rgba(0, 0, 0, 0.496094) 0px 1px 1px 0px;
-		color: #333;
-		display: block;
-		font-family: arial, sans-serif;
-		font-size: 12px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: normal;
-		padding: 9px;
-		line-height: normal;
-		margin: 0;
-		padding: 0;
-		text-align: left;
-		width: 900px;
-		border-radius:3px;
-	}
-	#ois_validation_info_wrap {
-		background-attachment: scroll;
-		background-clip: border-box;
-		background-color: #6683B3;
-		background-image: -webkit-linear-gradient(top, #6683b3 0px, #506ea0 100%);
- 		background-image: -moz-linear-gradient(top,  #6683b3, #506ea0) !important;
-		background-origin: padding-box;
-		background-repeat: repeat;
-		border: none;
-		-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 1px 1px 0px;
-		box-shadow: rgba(0, 0, 0, 0.496094) 0px 1px 1px 0px;
-		color: #333;
-		display: block;
-		font-family: arial, sans-serif;
-		font-size: 12px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: normal;
-		padding: 9px;
-		line-height: normal;
-		margin: 0;
-		padding: 0;
-		text-align: left;
-		width: 900px;
-		border-radius:3px;
-	}
-	#ois_validation_info {
-		background-attachment: scroll;
-		background-clip: border-box;
-		background-color: transparent;
-		background-image: none;
-		background-origin: padding-box;
-		background-repeat: repeat;
-		border: none;
-		color: white;
-		display: block;
-		font-family: arial, sans-serif;
-		font-size: 13px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: bold;
-		line-height: normal;
-		margin-bottom: 0px;
-		margin-left: 0px;
-		margin-right: 0px;
-		margin-top: 0px;
-		overflow-x: hidden;
-		overflow-y: hidden;
-		padding: 9px 40px;
-		text-align: left;
-		text-shadow: transparent 0px 0px 0px, rgba(0, 0, 0, 0.296875) 0px 0px 1px;
-	}
-	.ois_validation_input {
-		-webkit-box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px, rgba(0, 0, 0, 0.199219) 0px 1px 1px 0px inset;
-		background-color: #F4F4F4;
-		border: 1px solid #AAA;
-		border-radius: 2px;
-		box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px, rgba(0, 0, 0, 0.199219) 0px 1px 1px 0px inset;
-		color: #555;
-		font-family: arial, sans-serif;
-		font-size: 13px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: normal;
-		letter-spacing: normal;
-		line-height: normal;
-		margin: 0;
-		padding: 6px 31px 6px 9px;
-		text-indent: 0px;
-		width: 236px;
-	}
-	.ois_validation_label {
-		color: #333;
-		font-family: arial, sans-serif;
-		font-size: 13px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: normal;
-		line-height: normal;
-		margin: 0 0 5px 0;
-		text-align: left;
-	}
-	.ois_validation_title {
-		color: #333;
-		display: block;
-		font-family: arial, sans-serif;
-		font-size: 16px;
-		font-style: normal;
-		font-variant: normal;
-		font-weight: bold;
-		line-height: normal;
-		margin: 0 0 20px 0;
-	}
-	.ois_validation_button {
-		background: -moz-linear-gradient(top,  rgb(104, 231, 127),  rgb(48, 166, 85)) !important;
-		background: -webkit-gradient(linear, left top, left bottom, from(rgb(104, 231, 127)), to(rgb(48, 166, 85))) !important;
-		background-color: #30e77f !important; -webkit-box-shadow: rgba(255, 255, 255, 0.449219) 0px 1px 0px 0px inset !important;
-		border: 1px solid #30a655 !important;
-		color: #fff !important;
-		text-shadow: transparent 0px 0px 0px, rgba(0, 0, 0, 0.449219) 0px 1px 0px !important;
-		padding: 6px 8px;
-		font-weight: bold;
-		font-size: 12px;
-	}
-	.ois_validation_section {
-		vertical-align: middle;
-		padding-right: 10px;
-	}
-	</style>
-	<script src="//www.parsecdn.com/js/parse-1.2.17.min.js"></script>
-	<div id="ois_validation_info_wrap">
-		<div id="ois_validation_info">
-			<div>Please complete and submit the form below to activate this plugin. This is to ensure that you have the latest version of OptinSkin.</div>
-		</div>
-	</div>
-	<div id="ois_validation_form">
-		<div class="ois_validation_title">Plugin Validation</div>
-		<form method="post" id="os-validation-form">
-			<table>
-				<tr>
-					<td class="ois_validation_section">
-						<span class="ois_validation_label">Your User ID:</span></td>
-					<td class="ois_validation_section">
-						<input type="text" name="ois_validation_id" id="ois_validation_id" class="ois_validation_input" /></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td class="ois_validation_section">
-						<span class="ois_validation_label">Your License Key:</span></td>
-					<td class="ois_validation_section">
-						<input type="text" name="ois_validation_input" id="ois_validation_input" class="ois_validation_input" /></td>
-					<td class="ois_validation_section">
-						<?php wp_nonce_field('ois_validation', 'validate'); ?>
-						<input type="submit" value="Verify Your Plugin" class="ois_validation_button" /></td>
-				</tr>
-			</table>
-		</form>
-	</div>
-
-	<script type="text/javascript">
-		jQuery(document).ready(function ($) {
-			$('#os-validation-form').submit(function (e) {
-				e.preventDefault();
-				//alert("Hello World");
-				var siteUrl = "<?php echo get_site_url(); ?>";
-				var userID = $('#ois_validation_id').val();
-				var license = $('#ois_validation_input').val();
-				//alert(userID + ": " + license);
-
-				Parse.initialize("6KDQYUfjkBLaVwXeX9D6zJKWq9Ba4x0FxOs21foH", "YlBjiXA7CWZwA6wpsAiHvwnG2PUd7tFG0ZmDJFQ4");
-
-				var LicenseObject = Parse.Object.extend("License");
-				var query = new Parse.Query(LicenseObject);
-				query.equalTo("userID", userID);
-				query.equalTo("objectId", license);
-				query.find({
-				  success: function(results) {
-				    //alert("Successfully retrieved " + results.length + " scores.");
-				    // Do something with the returned Parse.Object values
-				      var object = results[0];
-				      if (results.length > 0) {
-					      if (object.get('licenseType') == 'multiple') {
-						    // then we're just going to insert this site
-						    var ValidationObject = Parse.Object.extend("Validation");
-							var validationO = new ValidationObject();
-							validationO.save({
-								site: siteUrl,
-								license: license,
-								userID: userID
-							}).then(function(object) {
-								// good result, save the license key!
-								$.ajax({
-									type: "post",
-									data: {
-										userID: userID,
-										validated: true,
-									}
-								}).success(function() {<?php
-		$cur_location = explode("?", $_SERVER['REQUEST_URI']);
-		$new_location = 'http://' . $_SERVER["HTTP_HOST"] .
-			$cur_location[0] . '?page=addskin'
-		?>window.location.href = '<?php echo $new_location ?>';
-								});
-							});
-					      }
-				      } else {
-					      // fail, no results!
-					      $('#ois_validation_info_wrap').html('<div id="ois_validation_error_wrap" style="margin: 5px 0 10px 0;"><div id="ois_validation_info">That appears to be the incorrect key for your instance of OptinSkin. Please contact your supplier if you need assistance.</div></div>');
-				      }
-				  },
-				  error: function(error) {
-
-				  }
-				});
-
-				/*
-				This creates a new license key!
-var LicenseObject = Parse.Object.extend("License");
-				var licenseO = new LicenseObject();
-				licenseO.save({
-					userID: userID,
-				}).then(function(object) {
-					alert("yay! it worked");
-				});
-*/
-			});
-		});
-	</script>
-	<?php
 	}
 }
 ?>

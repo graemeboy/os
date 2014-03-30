@@ -21,6 +21,19 @@ function ois_custom() {
 	
 	// Check if we're updating a design, or adding one.
 	ois_save_custom_design($custom_designs);
+	
+	if (isset($_GET['id'])) {
+		// Editing a design
+
+		$design_id = trim($_GET['id']);
+		$custom_path = OIS_PATH . "customDesigns/$design_id";
+
+		if (file_exists($custom_path))
+		{
+			$this_html = file_get_contents("$custom_path/static.html");
+			$this_css = file_get_contents("$custom_path/style.css");
+		} // if
+	} // if
 		
 	// Create navigation to existing designs.
 	ois_custom_designs_header($custom_designs);
@@ -247,33 +260,57 @@ function ois_custom() {
  */
 function ois_custom_designs_header($custom_designs)
 {
-		?>
-	<div>
+	// Check if we are currently editing an existing design.
+	if (isset($_GET['id']))
+	{
+		$editing_design = $_GET['id'];
+	} // if
+	else
+	{
+		$editing_design = 0;
+	} // else
+	?>
 	<h2 class="nav-tab-wrapper">
 	<?php 
-	
+	// Get the base URI for editing and creating designs.
+	$uri = explode('?', $_SERVER['REQUEST_URI']);
+	// Add a link to creating a new design
+	$create_url = $uri[0] . '?page=create-design';
+	// Output the link to the navigation bar.
+	?>
+	<a href="<?php echo $create_url; ?>" class="nav-tab <?php if (!$editing_design) echo "nav-tab-active" ?>">
+		<span class="glyphicon glyphicon-signal"></span> 
+		New Design
+	</a>
+	<?php
 	// Check if custom designs have been created.
 	if (!empty($custom_designs))
 	{
+		// If so, create a link to edit each one of those designs.
 		
+		
+		foreach ($custom_designs as $design_id)
+		{
+			// Create a custom editing url.
+			$custom_url = $create_url . '&id=' . $design_id;
+			// Output the link to the navigation bar.
+			?>
+			<a href="<?php echo $custom_url; ?>" class="nav-tab <?php 
+					if ($editing_design == $design_id) echo "nav-tab-active" 
+				?>">
+				<span class="glyphicon glyphicon-signal"></span> 
+				Edit Design <?php echo $design_id ?>
+			</a>
+			<?php
+		} // foreach
 	} // if
-	
-	if ($status == 'publish')
-	{
-		// If the skin has been published, then the user can check performance.
-		$performance_url = $uri[0] . '?page=ois-' . $skin_id;
-		?>
-		<a href="<?php echo $performance_url; ?>" class="nav-tab"><span class="glyphicon glyphicon-signal"></span> Skin Performance</a>
-		<?php
-	} // if
-		
-		
+	// Add a link to instructions
 	?>
-		<a href="#ois-instructions" class="nav-tab"><span class="glyphicon glyphicon-plus"></span> Instructions</a>
-	</h2>
-</div>	
+		<a href="#ois-instructions" class="nav-tab">
+			<span class="glyphicon glyphicon-plus"></span> Instructions
+		</a>
+	</h2> <!-- .nav-tab-wrapper -->
 <?php
-
 } // ois_save_custom_design()
 
 /**
@@ -336,18 +373,6 @@ function ois_save_custom_design($custom_designs)
 		} // if
 
 	} // if
-	else if (isset($_GET['id'])) {
-		// Editing a design
-
-		$design_id = trim($_GET['id']);
-		$custom_path = OIS_PATH . "customDesigns/$design_id";
-
-		if (file_exists($custom_path))
-		{
-			$this_html = file_get_contents("$custom_path/static.html");
-			$this_css = file_get_contents("$custom_path/style.css");
-		} // if
-	} // else if
 } // ois_save_design ()
 
 ?>

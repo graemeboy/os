@@ -93,7 +93,7 @@ function ois_license_key()
 						} // if 
 						else
 						{
-							$('#validation-success').text(response);
+							$('#validation-success').html(response);
 							$('#validation-success').show();
 						} // else
 						//alert('Got this from the server: ' + response);
@@ -143,7 +143,16 @@ function ois_update_license ()
 		update_option('ois-valid', 'yes');
 		update_option('ois-home-url', $home_url);
 		update_option('ois-key', $license);
-		echo "Your license key was validated, and saved successfully. Thank you for using OptinSkin.";
+		
+		$cur_location = explode("?", $_SERVER['REQUEST_URI']);
+		$new_location = 'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin';
+				
+				
+		echo "Thank you for using OptinSkin. " . 
+			"Your license key was validated, and saved successfully." . 
+			'<div style="margin-top:5px;"><a href="' . $new_location . 
+				'" style="cursor:pointer;text-decoration:none;">' . 
+					'Click here to begin creating skins.</a></div>';
 	} // if
 	else
 	{
