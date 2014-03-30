@@ -11,7 +11,6 @@ add_action( 'admin_menu', 'ois_admin_actions' );
  */
 function ois_admin_actions() {
 	// Create Option for General Settings
-	//update_option('ois-valid', 'no');
 	$validated = get_option('ois-valid');
 	if (trim($validated) != 'yes') 
 	{
@@ -48,7 +47,7 @@ function ois_admin_actions() {
 		// Option to export skins
 		add_submenu_page( 'addskin', 'Export Skins', 'Export Skins', 'manage_options', 'oisexport', 'ois_export_skins' );
 
-		add_submenu_page( 'addskin', 'Create a Design', 'Create a Design', 'manage_options', 'create-design', 'ois_custom' );
+		add_submenu_page( 'addskin', 'Custom Designs', 'Custom Designs', 'manage_options', 'create-design', 'ois_custom' );
 
 		if ($stats_disable != 'yes') 
 		{

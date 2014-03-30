@@ -234,7 +234,6 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"><!-- for slider bars -->
 	<link href="<?php echo OIS_EXT_URL ?>normalize.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
-	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 

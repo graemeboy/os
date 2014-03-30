@@ -608,11 +608,9 @@ function ois_handle_new_skin()
 		$cur_location = explode("?", $_SERVER['REQUEST_URI']);
 		$new_location =
 			'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=ois-' . $skin_id;
-		/*
-echo '<script type="text/javascript">
+		echo '<script type="text/javascript">
 			window.location = "' . $new_location  . '";
 		</script>';
-*/
 	} // if isset $posted_items
 } // ois_handle_new_skin()
 

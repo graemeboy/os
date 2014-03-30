@@ -92,8 +92,6 @@ function ois_edit_skin($skin) {
 			} // foreach
 		} // id
 		
-		
-		
 		$uri = explode('?', $_SERVER['REQUEST_URI']);
 		$edit_url = $uri[0] . '?page=addskin&id=' . $skin['id'];
 		$dup_url = $uri[0] . '?page=addskin&duplicate=' . $skin['id'];
@@ -392,7 +390,7 @@ function ois_edit_skin($skin) {
 			var conversions_data = [
 			{
 				color: '#5793c3',
-				label: "Conversion Rates",
+				label: "Conversion Rate",
 				data:
 					[
 				<?php
@@ -607,7 +605,9 @@ function ois_edit_skin($skin) {
 			$post_stats_submits = array();
 			$post_stats_impressions = array();
 			$all_posts = get_posts();
-			if (!empty($all_posts)) {
+			
+			if (!empty($all_posts)) 
+			{
 				foreach ($all_posts as $post) 
 				{
 					$post_id = $post->ID;
@@ -651,8 +651,8 @@ function ois_edit_skin($skin) {
 				foreach ($post_stats_submits as $post_num=>$stats) {
 					if ($count < $max_count) {
 						$this_post = get_post($post_num);
-						if (strlen($this_post->post_title) > 26) {
-							$title = substr($this_post->post_title, 0, 26) . '...';
+						if (strlen($this_post->post_title) > 60) {
+							$title = substr($this_post->post_title, 0, 60) . '...';
 						} else {
 							$title = $this_post->post_title;
 						}

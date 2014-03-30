@@ -40,6 +40,7 @@ function ois_license_key()
 <div id="validation-success" class="ois-validation-alert">Success</div>
 
 <h4>Please enter your license key below. The plugin requires this to access the designs when you create a new skin.</h4>
+
 <form method="post" id="ois-validation-form">
 	<input type="hidden" name="homeUrl" value="<?php echo $home_url; ?>" />
 	<input type="hidden" name="validate" value="yes" />
@@ -94,6 +95,10 @@ function ois_license_key()
 						else
 						{
 							$('#validation-success').html(response);
+							// Create a link for the user to begin adding skins.
+							var curURL = document.URL.split('?');
+							var addingURL = curURL[0] + '?page=addskin';
+							$('#ois-start-adding').attr('href', addingURL);
 							$('#validation-success').show();
 						} // else
 						//alert('Got this from the server: ' + response);
@@ -143,15 +148,12 @@ function ois_update_license ()
 		update_option('ois-valid', 'yes');
 		update_option('ois-home-url', $home_url);
 		update_option('ois-key', $license);
-		
-		$cur_location = explode("?", $_SERVER['REQUEST_URI']);
-		$new_location = 'http://' . $_SERVER["HTTP_HOST"] . $cur_location[0] . '?page=addskin';
 				
 				
 		echo "Thank you for using OptinSkin. " . 
 			"Your license key was validated, and saved successfully." . 
-			'<div style="margin-top:5px;"><a href="' . $new_location . 
-				'" style="cursor:pointer;text-decoration:none;">' . 
+			'<div style="margin-top:5px;"><a href="#" id="ois-start-adding" ' . 
+				'style="cursor:pointer;text-decoration:none;">' . 
 					'Click here to begin creating skins.</a></div>';
 	} // if
 	else

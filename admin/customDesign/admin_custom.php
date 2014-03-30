@@ -39,6 +39,7 @@ function ois_custom() {
 	ois_custom_designs_header($custom_designs);
 ?>
 
+	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/customDesign/css/style.css" rel="stylesheet">
 
 	<table class="widefat">
@@ -279,7 +280,7 @@ function ois_custom_designs_header($custom_designs)
 	// Output the link to the navigation bar.
 	?>
 	<a href="<?php echo $create_url; ?>" class="nav-tab <?php if (!$editing_design) echo "nav-tab-active" ?>">
-		<span class="glyphicon glyphicon-signal"></span> 
+		<span class="glyphicon glyphicon-file"></span> 
 		New Design
 	</a>
 	<?php
@@ -298,7 +299,7 @@ function ois_custom_designs_header($custom_designs)
 			<a href="<?php echo $custom_url; ?>" class="nav-tab <?php 
 					if ($editing_design == $design_id) echo "nav-tab-active" 
 				?>">
-				<span class="glyphicon glyphicon-signal"></span> 
+				<span class="glyphicon glyphicon-edit"></span> 
 				Edit Design <?php echo $design_id ?>
 			</a>
 			<?php
@@ -307,7 +308,7 @@ function ois_custom_designs_header($custom_designs)
 	// Add a link to instructions
 	?>
 		<a href="#ois-instructions" class="nav-tab">
-			<span class="glyphicon glyphicon-plus"></span> Instructions
+			<span class="glyphicon glyphicon-info-sign"></span> Instructions
 		</a>
 	</h2> <!-- .nav-tab-wrapper -->
 <?php

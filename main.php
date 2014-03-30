@@ -378,70 +378,70 @@ class OptinSkin_Widget extends WP_Widget
         <p style="border: 1px solid #e0e0e0; padding: 7px;&lt;?php
         ?&gt;" id="<?php echo $instance_key; ?>_info">If split-testing is enabled, the widget will either show the first or second skin, based on a random algorithm.</p>
     </div><?php
-        } // form (instance)
-    } // OptinSkin_Widget()
+    } // form (instance)
+} // class OptinSkin_Widget()
 
 
-    /**
-     * ois_add_impression function.
-     * Adds an impression statistic to the OptinSkin statistics database.
-     * 
-     * @access public
-     * @param mixed $skin_id
-     * @return void
-     */
-    function ois_add_impression($skin_id)
+/**
+ * ois_add_impression function.
+ * Adds an impression statistic to the OptinSkin statistics database.
+ * 
+ * @access public
+ * @param mixed $skin_id
+ * @return void
+ */
+function ois_add_impression($skin_id)
+{
+    global $wp_query;
+    $post_id = $wp_query->post->ID;
+    $table_created = get_option('ois_table_created');
+    if ($table_created == 'yes')
     {
-        global $wp_query;
-        $post_id = $wp_query->post->ID;
-        $table_created = get_option('ois_table_created');
-        if ($table_created == 'yes')
-        {
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'optinskin';
-            $row = $wpdb->insert(
-                $table_name, array(
-                    'skin' => $skin_id,
-                    'post' => $post_id,
-                    'submission' => 0
-                ) // table_name
-            ); // insert
-        } // if
-    } // ois_add_impression ()
-    
-    /**
-     * ois_make_skin function.
-     * 
-     * Returns the content for a given skin.
-     *
-     * Preconditions: $skin_id must be an existing skin; the path to "...skins/$skin_id" must exist.
-     *
-     * @access public
-     * @param mixed $skin_id
-     * @return void
-     */
-    function ois_make_skin($skin_id)
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'optinskin';
+        $row = $wpdb->insert(
+            $table_name, array(
+                'skin' => $skin_id,
+                'post' => $post_id,
+                'submission' => 0
+            ) // table_name
+        ); // insert
+    } // if
+} // ois_add_impression ()
+
+/**
+ * ois_make_skin function.
+ * 
+ * Returns the content for a given skin.
+ *
+ * Preconditions: $skin_id must be an existing skin; the path to "...skins/$skin_id" must exist.
+ *
+ * @access public
+ * @param mixed $skin_id
+ * @return void
+ */
+function ois_make_skin($skin_id)
+{
+	// Do we need to add an impression to the statistics database?
+	$stats_impressions_disable = get_option('stats_impressions_disable');
+	if ($stats_impressions_disable != 'yes') 
+	{
+    	// Add as an impression
+    	ois_add_impression($skin_id);
+    } // if
+    // The two CSS files required, and the one JS file required, are already enqueued.
+    $skin_path = OIS_PATH . "skins/$skin_id";
+    $skin_path = OIS_PATH . "/Skins/$skin_id";
+    $html_file = "$skin_path/static.html";
+    if (file_exists($html_file))
     {
-    	// Do we need to add an impression to the statistics database?
-    	$stats_impressions_disable = get_option('stats_impressions_disable');
-    	if ($stats_impressions_disable != 'yes') 
-    	{
-        	// Add as an impression
-        	ois_add_impression($skin_id);
-        } // if
-        // The two CSS files required, and the one JS file required, are already enqueued.
-        $skin_path = OIS_PATH . "skins/$skin_id";
-        $skin_path = OIS_PATH . "/Skins/$skin_id";
-        $html_file = "$skin_path/static.html";
-        if (file_exists($html_file))
-        {
-            return file_get_contents($html_file);
-        } // if
-        else
-        {
-            return "<!-- OptinSkin file was not found in the directory. -->";
-        } // else
-    } // ois_make_skin ()
+        return file_get_contents($html_file);
+    } // if
+    else
+    {
+        return "<!-- OptinSkin file was not found in the directory. -->";
+    } // else
+} // ois_make_skin ()
     
-    // EOF
+// EOF
 ?>

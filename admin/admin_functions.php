@@ -170,13 +170,13 @@ function ois_start_table($title, $img)
 		<table class="widefat ois_table" style="margin-bottom: 10px !important;">
 			<thead>
 				<tr class="ois_header_row">
-					<th class="ois_header_title" style="font-family: \'Voces\' !important;border:none;color:#333;font-size:14px;font-weight:normal;vertical-align:middle !important;max-width:250px;text-shadow: #fff 0px 1px 0px !important;">';
+					<th class="ois_header_title">';
 			
 		if (trim($img) != '') {
 			echo '<img src="' . OIS_URL . 'admin/images/' . $img . '" style="height:16px;padding:0;margin:0;margin-bottom:-2px;padding-right:10px;" />';
 		}
 	echo $title . '</th>
-					<th style="border:none;color:#333;vertical-align:middle !important;"><span style="float:right;"><a class="ois_header_min" data-closed="' . OIS_URL . 'admin/images/plus.png" data-open="' . OIS_URL . '/admin/images/minus.png" href="javascript:void();" ><img src="' . OIS_URL . '/admin/images/minus.png" style="height:25px;margin-bottom:-5px;" /></a></span></th>
+					<th><span style="float:right;"><a class="ois_header_min" data-closed="' . OIS_URL . 'admin/images/plus.png" data-open="' . OIS_URL . '/admin/images/minus.png" href="javascript:void();" ><img src="' . OIS_URL . '/admin/images/minus.png" style="height:25px;margin-bottom:-5px;" /></a></span></th>
 				</tr>
 			</thead>';
 }
