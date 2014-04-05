@@ -232,7 +232,7 @@ font-weight: 100;">Please note that some of the social sharing buttons will not 
 	<script type="text/javascript" src="<?php echo OIS_URL ?>admin/addSkin/js/add_skin.js"></script> <!-- Validation; changes according to selected service provider; etc. -->
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"><!-- for slider bars -->
-	<link href="<?php echo OIS_EXT_URL ?>normalize.css" rel="stylesheet" />
+	<link href="<?php echo OIS_EXT_URL ?>min/normalize.min.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/addSkin/css/style.css" rel="stylesheet" />
 	<link href="<?php echo OIS_URL ?>admin/css/glyphicons.bootstrap.min.css" rel="stylesheet" />

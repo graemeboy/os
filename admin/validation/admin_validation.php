@@ -68,10 +68,12 @@ function ois_license_key()
 			
 			// Send to external server.
 			data = $('#ois-validation-form').serialize();
-			jQuery.post(apiUrl, data, function (data)
+			console.log(data);
+			jQuery.post(apiUrl, data, function (resp)
 			{
+				console.log(resp);
 				// This is going to check to see if we have a working license.
-				if (data == 1)
+				if (resp == 1)
 				{
 					// Good.
 					var data = {
@@ -107,7 +109,7 @@ function ois_license_key()
 				else
 				{
 					// Error.
-					$('#validation-error').text(data);
+					$('#validation-error').text(resp);
 					$('#validation-error').show();
 				} // else
 			}) // done

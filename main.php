@@ -10,10 +10,10 @@ Author URI: http://www.viperchill.com
 */
 
 
-// DEFINE PATH SHORTCUTS
+// DEFINE PATH SHORTCUTS - Do not modify.
 define( 'OIS_PATH', plugin_dir_path(__FILE__) );
 define( 'OIS_URL', WP_PLUGIN_URL . "/OptinSkin/" );
-define( 'OIS_EXT_URL', 'http://localhost:8888/designs/' );
+define( 'OIS_EXT_URL', 'http://optinskin.com/src/' );
 
 // ADD PARAGRAPH FIX
 add_filter('the_content', 'ois_empty_paragraph_fix', 101);
@@ -62,7 +62,6 @@ function ois_empty_paragraph_fix($content)
     $content = force_balance_tags($content);
     return preg_replace('#<p>\s*+(<br\s*/*>)?\s*</p>#i', '', $content);
 } // ois_empty_paragraph_fix (String content)
-
 
 /*
     Pre: $_POST['skin_id'] must exist, and this is an ID that is contained
@@ -247,11 +246,13 @@ class OptinSkin_Widget extends WP_Widget
     function widget( $args, $instance ) 
     {
         extract( $args );
-        //$title = apply_filters('widget_title', $instance['title'] );
+        /*
+$title = apply_filters('widget_title', $instance['title'] );
         echo $before_widget;
         if ( $title ) {
             echo $before_title . $title . $after_title;
         }
+*/
         
         // Primary skin
         $skin_id = $instance['skin'];
@@ -270,7 +271,7 @@ class OptinSkin_Widget extends WP_Widget
         
         echo ois_make_skin($skin_id);
 
-        echo '<div style="clear:both;"></div>';
+        echo '<div style="clear:both;margin-bottom:10px;"></div>';
         echo $after_widget;
     } // widget()
     
@@ -313,12 +314,11 @@ class OptinSkin_Widget extends WP_Widget
 ?>
 
     <style type="text/css">
-        .ois_admin_widget_title {
+        	.ois_admin_widget_title {
                 font-size:15px;
                 padding: 0 0 7px 0px;
             }
             .ois_admin_widget {
-                font-family: 'Asap';
                 max-width: 250px;
             }
             .ois_widget_selection {
@@ -330,9 +330,6 @@ class OptinSkin_Widget extends WP_Widget
     </style>
     <div class="ois_admin_widget">
         <h3 style="padding-top: 0;margin-top:10px;">Basic Settings</h3>
-
-        <p></p>
-
         <div class="ois_admin_widget_title">
             Skin to Display:
         </div><select class="ois_widget_selection" name="<?php echo $this->get_field_name( 'skin' ); ?>">
@@ -347,12 +344,7 @@ class OptinSkin_Widget extends WP_Widget
                     } // foreach
             ?>
         </select>
-        <p>
-
-        <p></p>
         <hr>
-        <p>
-
         <h3>Split-Testing <span style="font-weight:normal;">(Optional)</span></h3>
 
         <p><input class="ois_widget_split" id="<?php echo $instance_key; ?>_split" type="checkbox" name="<?php echo $this->get_field_name( 'split-test' ); ?>" <?php if ($instance['split-test'] == 'yes') {
